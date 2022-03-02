@@ -1,0 +1,11 @@
+{
+  "window.zoomLevel": 0,
+  "editor.minimap.enabled": false,
+  "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": { "source.organizeImports": true }
+}
