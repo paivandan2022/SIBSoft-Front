@@ -80,33 +80,37 @@ const import_blood = () => {
     await LoadStaffName();
     await LoadBloodLiquid();
   }, []);
-
-  const onFinishEdit = async () => {
-    const value = frmImport_blood.getFieldsValue();
-    console.log("value++++", value);
-    // const result = await api.put(`/Update_Stock`, {
-    //   blood_id: value.blood_id,
-    //   type_id: value.type_id,
-    //   hos_id: value.hos_id,
-    //   bag_type_id: value.bag_type_id,
-    //   liquid_id: value.liquid_id,
-    //   date_received: moment(value.date_received).format("YYYY-MM-DD"),
-    //   date_collect: moment(value.date_collect).format("YYYY-MM-DD"),
-    //   date_exp: moment(value.date_exp).format("YYYY-MM-DD"),
-    //   exp_time: moment(value.exp_time).format("HH:mm:ss"),
-    //   blood_group: value.blood_group,
-    //   blood_rh: value.blood_rh,
-    //   volume: value.volume,
-    //   unit_no: value.unit_no,
-    //   note: value.note,
-    //   staff_name: value.staff_name,
-    // });
-    //state
-    // setisModalVisibleEdit(false);
-    // showModalView(value.blood_id);
+  const Refresh = () => {
     frmImport_blood.resetFields();
-    initstaffname();
   };
+  const onFinishInsert = async (value) => {
+    try {
+      const result = await api.post(`/Insert_Import_Blood`, {
+        type_id: value.type_id,
+        hos_id: value.hos_id,
+        bag_type_id: value.bag_type_id,
+        liquid_id: value.liquid_id,
+        date_received: moment(value.date_received).format("YYYY-MM-DD"),
+        date_collect: moment(value.date_collect).format("YYYY-MM-DD"),
+        date_exp: moment(value.date_exp).format("YYYY-MM-DD"),
+        exp_time: moment(value.exp_time).format("HH:mm:ss"),
+        blood_group: value.blood_group,
+        blood_rh: value.blood_rh,
+        volume: value.volume,
+        unit_no: value.unit_no,
+        note: value.note,
+        staff_name: value.staff_name,
+      });
+      frmImport_blood.setFieldsValue({
+        unit_no: " ",
+      });
+      initstaffname();
+      document.getElementById("unit_no").focus();
+    } catch (error) {
+      Modal.error({ title: "มีถุงเลือดนี้แล้ว" });
+    }
+  };
+
   const initstaffname = () => {
     const userDataTemp = user.getUser();
     frmImport_blood.setFieldsValue({
@@ -348,7 +352,10 @@ const import_blood = () => {
             form={frmImport_blood}
             labelCol={{ span: 8 }}
             layout="horizontal"
-            onFinish={onFinishEdit}
+            onFinish={onFinishInsert}
+            initialValues={{
+              date_received: moment(),
+            }}
           >
             <Row justify="center">
               <Col span={8}>
@@ -404,7 +411,7 @@ const import_blood = () => {
                   <DatePicker style={{ width: "100%" }} format="DD-MM-YYYY" />
                 </Form.Item>
                 <Form.Item label="เวลาหมดอายุ" name="exp_time">
-                  <TimePicker format="HH-mm-ss" />
+                  <TimePicker defaultValue={moment("00:00:00", "HH:mm:ss")} />
                 </Form.Item>
               </Col>
               <Col span={8}>
@@ -454,11 +461,15 @@ const import_blood = () => {
                 <Form.Item label="ปริมาณ" name="volume">
                   <Input suffix="ml." />
                 </Form.Item>
-                <Form.Item label={<h2>Unit_no </h2>} name="unit_no">
+                <Form.Item
+                  label={<h2>Unit_no </h2>}
+                  name="unit_no"
+                  id="unit_no"
+                >
                   <Input
                     className="ant-input-lg"
                     size="large"
-                    onBlur={onFinishEdit}
+                    //onBlur={onFinishInsert}
                   />
                 </Form.Item>
               </Col>
@@ -478,6 +489,12 @@ const import_blood = () => {
                 <Form.Item label="หมายเหตุ" name="note">
                   <TextArea showCount maxLength={250} />
                 </Form.Item>
+                <Button type="primary" htmlType="submit">
+                  OK
+                </Button>
+                <Button type="primary" danger onClick={Refresh}>
+                  Refresh
+                </Button>
               </Col>
             </Row>
           </Form>
