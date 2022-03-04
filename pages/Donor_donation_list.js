@@ -1,27 +1,29 @@
 import {
   DeleteOutlined,
   EditOutlined,
-  SyncOutlined,
   SearchOutlined,
+  SyncOutlined,
 } from "@ant-design/icons";
 import {
+  Avatar,
   Button,
   Col,
   Modal,
   PageHeader,
   Row,
+  Select,
   Space,
   Table,
   Tag,
   Tooltip,
-  Avatar,
 } from "antd";
 import moment from "moment";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Layout } from "../components";
 import api from "../lib/api";
-import Link from "next/link";
 
+const { Option } = Select;
 function countDown() {
   let secondsToGo = 9;
   const modal = Modal.warning({
@@ -40,33 +42,73 @@ function countDown() {
   }, secondsToGo * 1000);
 }
 
+const tabListNoTitle = [
+  {
+    key: "article",
+    tab: "วันที่บริจาค",
+  },
+  {
+    key: "app",
+    tab: "รายละเอียดการบริจาค",
+  },
+  {
+    key: "project",
+    tab: "เจ้าหน้าที่",
+  },
+];
+
+const contentListNoTitle = {
+  article: <p>sss</p>,
+  app: <p>app content</p>,
+  project: <p>project content</p>,
+};
+
 function Donor_donation_list() {
   const [newDonorlist, setnewDonorlist] = useState([]);
-  const [Modalblood, setModalblood] = useState(false);
-  const [Modaledit, setModaledit] = useState(false);
 
-  const showModalblood = () => {
-    setModalblood(true);
+  const Editpopup = (value) => {
+    console.log("reccord", value);
+    const scW = screen.width / 2;
+    const scH = screen.height / 2;
+    const appW = 1280;
+    const appH = 720;
+    const url = "/Donor_frmedit?id=" + value;
+    const title = "TEST";
+    const callW = appW / 2;
+    const callH = appH / 2;
+
+    const str =
+      "width=" +
+      appW +
+      ",height=" +
+      appH +
+      ",top=" +
+      (scH - callH) +
+      ",left=" +
+      (scW - callW);
+    window.open(url, title, str);
   };
 
-  const handleOkModalblood = () => {
-    setModalblood(false);
-  };
+  const Bloodpopup = (value) => {
+    const scW = screen.width / 2;
+    const scH = screen.height / 2;
+    const appW = 1280;
+    const appH = 720;
+    const url = "/Donor_frmblood?id=" + value;
+    const title = "TEST";
+    const callW = appW / 2;
+    const callH = appH / 2;
 
-  const handleCancelModalblood = () => {
-    setModalblood(false);
-  };
-
-  const showModaledit = () => {
-    setModaledit(true);
-  };
-
-  const handleOkModaledit = () => {
-    setModaledit(false);
-  };
-
-  const handleCancelModaledit = () => {
-    setModaledit(false);
+    const str =
+      "width=" +
+      appW +
+      ",height=" +
+      appH +
+      ",top=" +
+      (scH - callH) +
+      ",left=" +
+      (scW - callW);
+    window.open(url, title, str);
   };
 
   const columns = [
@@ -136,34 +178,20 @@ function Donor_donation_list() {
               style={{ fontSize: "5px", color: "green" }}
               shape="circle"
               icon={<SearchOutlined />}
-              onClick={showModaledit}
+              // onClick={Editpopup(record.cid)}
+              onClick={() => Editpopup(record.cid)}
             />
-            <Modal
-              title="ข้อมูลผู้บริจาค"
-              visible={Modaledit}
-              onOk={handleOkModaledit}
-              onCancel={handleCancelModaledit}
-              width={1000}
-            >
-              <p>ตรงนี้</p>
-            </Modal>
           </Tooltip>
-          <Tooltip title="ลงข้อมูลถุงเลือด">
+          <Tooltip title="ลงทะเบียนบริจาคเลือด">
             <Button
               style={{ fontSize: "5px", color: "brue" }}
               shape="circle"
               icon={<EditOutlined />}
-              onClick={showModalblood}
+              // onClick={Bloodpopup}
+              onClick={() => Bloodpopup(record.cid)}
+              // onclick={window.open("", "", "width=800,height=600")}
             />
-            <Modal
-              title="ลงข้อมูลถุงเลือด"
-              visible={Modalblood}
-              onOk={handleOkModalblood}
-              onCancel={handleCancelModalblood}
-              width={1000}
-            >
-              <p>ตรงนี้</p>
-            </Modal>
+
             {/* <EditOutlined style={{ fontSize: "20px", color: "green" }} shape="circle"/> */}
           </Tooltip>
           <Tooltip title="ลบ">

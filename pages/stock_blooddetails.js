@@ -400,10 +400,6 @@ const stock_blooddetails = () => {
       delete params.date_Search;
     }
 
-    console.log("=====", params);
-
-    console.log(formValue);
-
     try {
       let result;
 
@@ -930,20 +926,6 @@ const stock_blooddetails = () => {
                       <div
                         className="descriptions-click"
                         onClick={() => onClickRow(item)}
-                        // onClick={
-                        //   isSearch === true
-                        //     ? () =>
-                        //         onClickSearch({
-                        //           status_id: "9",
-                        //           date_type: frmSearch.getFieldValue(
-                        //             "date_type" || ""
-                        //           ),
-                        //           date_Search: frmSearch.getFieldValue("date_Search"),
-                        //           unit_no: frmSearch.getFieldValue("unit_no" || ""),
-                        //           antibody: frmSearch.getFieldValue("antibody" || ""),
-                        //         })
-                        //     : () => onClickRow(item)
-                        // }
                       >
                         {item.type_num}
                       </div>

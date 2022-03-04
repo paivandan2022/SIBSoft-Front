@@ -4,20 +4,22 @@ import {
   DatePicker,
   Form,
   Input,
+  Modal,
   Row,
   Select,
   Table,
   TimePicker,
   Typography,
 } from "antd";
+import th_TH from "antd/lib/date-picker/locale/th_TH";
 import JsBarcode from "jsbarcode";
 import moment from "moment";
+import "moment/locale/th";
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineFileSearch } from "react-icons/ai";
 import Layout from "../components/layout";
 import api from "../lib/api";
 import user from "../lib/user";
-
 const { Title } = Typography;
 
 const { Search, TextArea } = Input;
@@ -33,6 +35,7 @@ const import_blood = () => {
   const [staff_name, setStaffName] = useState();
   const [blood_liquid, setBloodLiquid] = useState();
   const [onChangeDatetypeID, setOnChangeDatetypeID] = useState();
+  const [listimport, setListimport] = useState();
 
   const [requireGroup, setRequireGroup] = useState(false);
   const [requireRh, setRequireRh] = useState(false);
@@ -40,6 +43,7 @@ const import_blood = () => {
   const [disabledRh, setDisabledRh] = useState(false);
 
   const [frmImport_blood] = Form.useForm();
+  const [frmEdit_blood] = Form.useForm();
   const printComponent = useRef(null);
 
   //--------------------------------------//
@@ -80,9 +84,11 @@ const import_blood = () => {
     await LoadStaffName();
     await LoadBloodLiquid();
   }, []);
+
   const Refresh = () => {
     frmImport_blood.resetFields();
   };
+
   const onFinishInsert = async (value) => {
     try {
       const result = await api.post(`/Insert_Import_Blood`, {
@@ -101,14 +107,27 @@ const import_blood = () => {
         note: value.note,
         staff_name: value.staff_name,
       });
+      console.log("result---", result);
+
+      if (result?.data?.status === "error") {
+        Modal.error({ title: <h2>มีถุงเลือดนี้แล้ว</h2> });
+      }
       frmImport_blood.setFieldsValue({
         unit_no: " ",
       });
       initstaffname();
       document.getElementById("unit_no").focus();
+      fetchList();
     } catch (error) {
-      Modal.error({ title: "มีถุงเลือดนี้แล้ว" });
+      Modal.error({ title: "Error" });
     }
+  };
+
+  const fetchList = async () => {
+    const result = await api.get(`/Select_Import_Blood`);
+    const fetchList_blood = result.data;
+    setListimport(fetchList_blood);
+    console.log("===", result.data);
   };
 
   const initstaffname = () => {
@@ -119,6 +138,7 @@ const import_blood = () => {
   };
   useEffect(() => {
     initstaffname();
+    fetchList();
   }, []);
 
   const fetchABO = async () => {
@@ -132,7 +152,13 @@ const import_blood = () => {
   }, []);
 
   /////////////////////////
-
+  const Delete_data = async (value) => {
+    console.log("record?.id", value);
+    const result = await api.delete(`/Delete_Import_Blood`, {
+      params: { id: value },
+    });
+    fetchList();
+  };
   // //Refresh ข้อมูลปุ่มหมู่เลือด ทุก 1000=1วิ วินาที
   // useEffect(() => {
   //   setInterval(() => {
@@ -259,78 +285,69 @@ const import_blood = () => {
 
   const columnImport = [
     {
-      title: "# ",
+      title: "ลำดับ",
       dataIndex: "",
       key: "",
+      render: (text, record, index) => {
+        return index + 1;
+      },
     },
     {
-      title: "Unit No.",
-      dataIndex: "",
-      key: "",
+      title: "เลขที่ถุงเลือด",
+      dataIndex: "blood_no",
+      key: "blood_no",
     },
     {
       title: "ชนิดเลือด",
-      dataIndex: "",
-      key: "",
+      dataIndex: "s_name",
+      key: "s_name",
     },
     {
       title: "หมู่เลือด",
-      dataIndex: "",
+      dataIndex: "blood_group",
       key: "",
+      render: (text, record, index) => {
+        return `${record.blood_group}${record.blood_rh}`;
+      },
     },
     {
       title: "ปริมาณ",
-      dataIndex: "",
-      key: "",
+      dataIndex: "blood_value",
+      key: "blood_value",
     },
     {
       title: "วันที่รับ",
-      dataIndex: "",
-      key: "",
+      dataIndex: "unit_receive",
+      key: "unit_receive",
     },
     {
       title: "วันหมดอายุ",
-      dataIndex: "",
-      key: "",
+      dataIndex: "unit_exp",
+      key: "unit_exp",
     },
     {
       title: "รับมาจาก",
-      dataIndex: "",
-      key: "",
+      dataIndex: "hos_long_name_th",
+      key: "hos_long_name_th",
     },
     {
       title: "สถานะ",
-      dataIndex: "",
-      key: "",
-    },
-    {
-      title: "วันจำหน่าย",
-      dataIndex: "",
-      key: "",
-    },
-    {
-      title: "แก้ไข",
-      dataIndex: "",
-      key: "view",
-      render: (text, record) => (
-        <AiOutlineFileSearch
-          style={{ fontSize: "25px", color: "#FF6633" }}
-          onClick={() => showModalView(record.id)}
-        />
-      ),
+      dataIndex: "status",
+      key: "status",
     },
     {
       title: "ลบ",
       dataIndex: "",
-      key: "view",
+      key: "delete",
       render: (text, record) => (
         <AiOutlineFileSearch
           style={{ fontSize: "25px", color: "#FF6633" }}
-          onClick={() => showModalView(record.id)}
+          onClick={() => Delete_data(record.id)}
         />
       ),
     },
   ];
+
   return (
     <>
       <Layout keyTab="import_blood">
@@ -347,7 +364,7 @@ const import_blood = () => {
           </Col>
         </Row>
 
-        <Row>
+        <div style={{ marginTop: 30 }}>
           <Form
             form={frmImport_blood}
             labelCol={{ span: 8 }}
@@ -355,6 +372,7 @@ const import_blood = () => {
             onFinish={onFinishInsert}
             initialValues={{
               date_received: moment(),
+              exp_time: moment("00:00:00", "HH:mm:ss"),
             }}
           >
             <Row justify="center">
@@ -396,22 +414,26 @@ const import_blood = () => {
                   </Select>
                 </Form.Item>
                 <br />
-
                 <Form.Item label="วันเจาะ" name="date_collect">
                   <DatePicker
                     style={{ width: "100%" }}
                     format="DD-MM-YYYY"
                     onChange={CalExpdate}
+                    locale={th_TH}
                   />
                 </Form.Item>
                 <Form.Item label="จำนวนวันหมดอายุ" name="time_exp">
                   <Input disabled />
                 </Form.Item>
                 <Form.Item label="วันหมดอายุ" name="date_exp">
-                  <DatePicker style={{ width: "100%" }} format="DD-MM-YYYY" />
+                  <DatePicker
+                    style={{ width: "100%" }}
+                    format="DD-MM-YYYY"
+                    locale={th_TH}
+                  />
                 </Form.Item>
                 <Form.Item label="เวลาหมดอายุ" name="exp_time">
-                  <TimePicker defaultValue={moment("00:00:00", "HH:mm:ss")} />
+                  <TimePicker />
                 </Form.Item>
               </Col>
               <Col span={8}>
@@ -431,7 +453,9 @@ const import_blood = () => {
                     disabled={disabledGr}
                   >
                     {blood_name?.map((item) => (
-                      <Option value={item.blood_name}>{item.blood_name}</Option>
+                      <Option key={item.blood_name} value={item.blood_name}>
+                        {item.blood_name}
+                      </Option>
                     ))}
                   </Select>
                 </Form.Item>
@@ -452,7 +476,7 @@ const import_blood = () => {
                     disabled={disabledRh}
                   >
                     {rh_name?.map((item) => (
-                      <Option value={item.rh_shot_name}>
+                      <Option key={item.rh_shot_name} value={item.rh_shot_name}>
                         {item.rh_shot_name}
                       </Option>
                     ))}
@@ -462,15 +486,11 @@ const import_blood = () => {
                   <Input suffix="ml." />
                 </Form.Item>
                 <Form.Item
-                  label={<h2>Unit_no </h2>}
+                  label={<h2>เลขที่ถุงเลือด</h2>}
                   name="unit_no"
                   id="unit_no"
                 >
-                  <Input
-                    className="ant-input-lg"
-                    size="large"
-                    //onBlur={onFinishInsert}
-                  />
+                  <Input className="ant-input-lg" size="large" />
                 </Form.Item>
               </Col>
 
@@ -483,13 +503,22 @@ const import_blood = () => {
                   </Select>
                 </Form.Item>
                 <Form.Item label="วันที่รับ" name="date_received">
-                  <DatePicker style={{ width: "100%" }} format="DD-MM-YYYY" />
+                  <DatePicker
+                    style={{ width: "100%" }}
+                    format="DD-MM-YYYY"
+                    locale={th_TH}
+                  />
                 </Form.Item>
 
                 <Form.Item label="หมายเหตุ" name="note">
                   <TextArea showCount maxLength={250} />
                 </Form.Item>
-                <Button type="primary" htmlType="submit">
+
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  //style={{ display: "none" }}
+                >
                   OK
                 </Button>
                 <Button type="primary" danger onClick={Refresh}>
@@ -498,14 +527,18 @@ const import_blood = () => {
               </Col>
             </Row>
           </Form>
-        </Row>
+        </div>
         <Row>
           <Col span={24}>
-            <Table columns={columnImport}></Table>
+            <Table
+              columns={columnImport}
+              dataSource={listimport}
+              pagination={false}
+              scroll={{ y: 500 }}
+            />
           </Col>
         </Row>
       </Layout>
-
       {/* /-----------------------/ */}
     </>
   );
