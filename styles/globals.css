@@ -105,6 +105,21 @@ a {
   border: 1px solid rgb(88, 88, 88);
   box-shadow: 2px 2px 2px #000;
 }
+.btn-color-a {
+  background: #ffff66;
+}
+.btn-color-b {
+  background: #ff99ff;
+}
+.btn-color-o {
+  background: #00ccff;
+}
+.btn-color-ab {
+  background: #f9ffff;
+}
+.btn-color-cryo {
+  background: #d3d3d3;
+}
 .ant-typography-stock {
   line-height: 0 !important;
   margin-bottom: -0.1em !important;

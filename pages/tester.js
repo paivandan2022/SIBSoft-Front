@@ -356,11 +356,13 @@ const import_blood = () => {
             <Title level={2}>Import Blood</Title>
           </Col>
           <Col span={6}>
-            <Button>A : {ABOCountAll?.A}</Button>
-            <Button>B : {ABOCountAll?.B}</Button>
-            <Button>O : {ABOCountAll?.O}</Button>
-            <Button>AB : {ABOCountAll?.AB}</Button>
-            <Button>ไม่ระบุ : {ABOCountAll?.CryO}</Button>
+            <Button className="btn-color-a">A : {ABOCountAll?.A}</Button>
+            <Button className="btn-color-b">B : {ABOCountAll?.B}</Button>
+            <Button className="btn-color-o">O : {ABOCountAll?.O}</Button>
+            <Button className="btn-color-ab">AB : {ABOCountAll?.AB}</Button>
+            <Button className="btn-color-cryo">
+              ไม่ระบุ : {ABOCountAll?.CryO}
+            </Button>
           </Col>
         </Row>
 
@@ -513,17 +515,21 @@ const import_blood = () => {
                 <Form.Item label="หมายเหตุ" name="note">
                   <TextArea showCount maxLength={250} />
                 </Form.Item>
-
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  //style={{ display: "none" }}
-                >
-                  OK
-                </Button>
-                <Button type="primary" danger onClick={Refresh}>
-                  Refresh
-                </Button>
+                <br />
+                <Row justify="end">
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      style={{ display: "none" }}
+                    >
+                      OK
+                    </Button>
+                    <Button type="primary" danger onClick={Refresh}>
+                      Clear
+                    </Button>
+                  </Form.Item>
+                </Row>
               </Col>
             </Row>
           </Form>

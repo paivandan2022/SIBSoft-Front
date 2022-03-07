@@ -644,11 +644,13 @@ const stock_blooddetails = () => {
           </Col>
 
           <Col span={6}>
-            <Button>A : {ABOCountAll?.A}</Button>
-            <Button>B : {ABOCountAll?.B}</Button>
-            <Button>O : {ABOCountAll?.O}</Button>
-            <Button>AB : {ABOCountAll?.AB}</Button>
-            <Button>ไม่ระบุ : {ABOCountAll?.CryO}</Button>
+            <Button className="btn-color-a">A : {ABOCountAll?.A}</Button>
+            <Button className="btn-color-b">B : {ABOCountAll?.B}</Button>
+            <Button className="btn-color-o">O : {ABOCountAll?.O}</Button>
+            <Button className="btn-color-ab">AB : {ABOCountAll?.AB}</Button>
+            <Button className="btn-color-cryo">
+              ไม่ระบุ : {ABOCountAll?.CryO}
+            </Button>
           </Col>
         </Row>
         <Row style={{ margin: 15 }} justify="start">
