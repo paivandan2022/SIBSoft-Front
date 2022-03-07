@@ -15,8 +15,9 @@ import th_TH from "antd/lib/date-picker/locale/th_TH";
 import JsBarcode from "jsbarcode";
 import moment from "moment";
 import "moment/locale/th";
+import publicIp from "public-ip";
 import { useEffect, useRef, useState } from "react";
-import { AiOutlineFileSearch } from "react-icons/ai";
+import { AiOutlineDelete } from "react-icons/ai";
 import Layout from "../components/layout";
 import api from "../lib/api";
 import user from "../lib/user";
@@ -123,11 +124,44 @@ const import_blood = () => {
     }
   };
 
+  const onFinishUpdate = async () => {
+    let sum_id = "";
+    const ip = {};
+    for (let i = 0; i < listimport.length; i++) {
+      const item = listimport[i];
+      sum_id = sum_id + "'" + item.id + "',";
+    }
+    //await api.put(`Update_Import_Blood`, { id: item.id }, { status: "1" });
+    console.log("sum id : ", sum_id.substring(0, sum_id.length - 1));
+    console.log("ip--------->", await publicIp.v4());
+    // const result = await api.put(`/Update_Import_Blood`, {
+    //   params: {
+    //     ...listimport,
+    //     id: listimport[0].id,
+    //     type_id: listimport[0].type_id,
+    //     hos_id: listimport[0].hos_long_name_th,
+    //     bag_type_id: listimport[0].blood_bag_type_id,
+    //     liquid_id: listimport[0].liquid,
+    //     date_received: moment(listimport.date_received).format("YYYY-MM-DD"),
+    //     date_collect: moment(listimport.date_collect).format("YYYY-MM-DD"),
+    //     date_exp: moment(listimport.date_exp).format("YYYY-MM-DD"),
+    //     exp_time: moment(listimport.exp_time).format("HH:mm:ss"),
+    //     blood_group: listimport[0].blood_group,
+    //     blood_rh: listimport[0].blood_rh,
+    //     volume: listimport[0].volume,
+    //     unit_no: listimport[0].unit_no,
+    //     note: listimport[0].note,
+    //     staff_name: listimport[0].staff_name,
+    //   },
+    // });
+    //state
+    //fetchList();
+  };
   const fetchList = async () => {
     const result = await api.get(`/Select_Import_Blood`);
     const fetchList_blood = result.data;
     setListimport(fetchList_blood);
-    console.log("===", result.data);
+    console.log("===fetchList", result.data);
   };
 
   const initstaffname = () => {
@@ -340,7 +374,7 @@ const import_blood = () => {
       dataIndex: "",
       key: "delete",
       render: (text, record) => (
-        <AiOutlineFileSearch
+        <AiOutlineDelete
           style={{ fontSize: "25px", color: "#FF6633" }}
           onClick={() => Delete_data(record.id)}
         />
@@ -513,7 +547,7 @@ const import_blood = () => {
                 </Form.Item>
 
                 <Form.Item label="หมายเหตุ" name="note">
-                  <TextArea showCount maxLength={250} />
+                  <TextArea style={{ height: 120 }} showCount maxLength={250} />
                 </Form.Item>
                 <br />
                 <Row justify="end">
@@ -543,6 +577,12 @@ const import_blood = () => {
               scroll={{ y: 500 }}
             />
           </Col>
+        </Row>
+        <br />
+        <Row justify="end">
+          <Button type="primary" onClick={onFinishUpdate}>
+            ยืนยัน
+          </Button>
         </Row>
       </Layout>
       {/* /-----------------------/ */}
