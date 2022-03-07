@@ -12,21 +12,22 @@ import {
   Typography,
 } from "antd";
 import th_TH from "antd/lib/date-picker/locale/th_TH";
+import { internalIpV4 } from "internal-ip";
 import JsBarcode from "jsbarcode";
 import moment from "moment";
 import "moment/locale/th";
-import publicIp from "public-ip";
+import os from "os";
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import Layout from "../components/layout";
 import api from "../lib/api";
 import user from "../lib/user";
-const { Title } = Typography;
 
-const { Search, TextArea } = Input;
+const { Title } = Typography;
+const { TextArea } = Input;
 const { Option } = Select;
 
-const import_blood = () => {
+const import_blood = ({ computerName }) => {
   const [ABOCountAll, setABOCountAll] = useState();
   const [opttype, setOptType] = useState();
   const [senderBlood, setSenderBlood] = useState();
@@ -44,10 +45,10 @@ const import_blood = () => {
   const [disabledRh, setDisabledRh] = useState(false);
 
   const [frmImport_blood] = Form.useForm();
-  const [frmEdit_blood] = Form.useForm();
   const printComponent = useRef(null);
 
   //--------------------------------------//
+
   const LoadOptType = async () => {
     const result = await api.get("/OptionType");
     setOptType(result.data);
@@ -125,38 +126,22 @@ const import_blood = () => {
   };
 
   const onFinishUpdate = async () => {
-    let sum_id = "";
-    const ip = {};
-    for (let i = 0; i < listimport.length; i++) {
-      const item = listimport[i];
-      sum_id = sum_id + "'" + item.id + "',";
-    }
-    //await api.put(`Update_Import_Blood`, { id: item.id }, { status: "1" });
-    console.log("sum id : ", sum_id.substring(0, sum_id.length - 1));
-    console.log("ip--------->", await publicIp.v4());
-    // const result = await api.put(`/Update_Import_Blood`, {
-    //   params: {
-    //     ...listimport,
-    //     id: listimport[0].id,
-    //     type_id: listimport[0].type_id,
-    //     hos_id: listimport[0].hos_long_name_th,
-    //     bag_type_id: listimport[0].blood_bag_type_id,
-    //     liquid_id: listimport[0].liquid,
-    //     date_received: moment(listimport.date_received).format("YYYY-MM-DD"),
-    //     date_collect: moment(listimport.date_collect).format("YYYY-MM-DD"),
-    //     date_exp: moment(listimport.date_exp).format("YYYY-MM-DD"),
-    //     exp_time: moment(listimport.exp_time).format("HH:mm:ss"),
-    //     blood_group: listimport[0].blood_group,
-    //     blood_rh: listimport[0].blood_rh,
-    //     volume: listimport[0].volume,
-    //     unit_no: listimport[0].unit_no,
-    //     note: listimport[0].note,
-    //     staff_name: listimport[0].staff_name,
-    //   },
-    // });
+    const ip = await internalIpV4();
+    const ids = listimport.map((item) => item.id);
+    console.log("ids", ids);
+    console.log("IPV4", ip);
+    console.log("computerName", computerName);
+
+    const result = await api.put(`/Update_Import_Blood`, {
+      ids: ids,
+      ip,
+      computerName,
+    });
+    console.log("===result", result);
     //state
-    //fetchList();
+    fetchList();
   };
+
   const fetchList = async () => {
     const result = await api.get(`/Select_Import_Blood`);
     const fetchList_blood = result.data;
@@ -615,3 +600,10 @@ const TestPrintComponent = ({ barcode, data }) => {
     </div>
   );
 };
+
+export async function getServerSideProps(context) {
+  const computerName = os.hostname();
+  return {
+    props: { computerName }, // will be passed to the page component as props
+  };
+}

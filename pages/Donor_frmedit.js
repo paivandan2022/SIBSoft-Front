@@ -44,13 +44,14 @@ function Donor_frmedit() {
   const [newDonorlist, setnewDonorlist] = useState([]);
   const [newCID, setnewCID] = useState();
   const router = useRouter();
-  console.log("-----router.query.id--------->", router?.query?.id);
+
+  console.log("-----router.query.id--------->", router.query.id);
 
   const Fetch_frmedit = async (value) => {
     console.log("--------------hjghjjhyuiyuij ", value);
     const result = await api.get("/Get_donor11", {
       params: {
-        id: value,
+        id: id,
       },
     });
 

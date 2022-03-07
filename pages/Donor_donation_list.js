@@ -24,6 +24,7 @@ import { Layout } from "../components";
 import api from "../lib/api";
 
 const { Option } = Select;
+
 function countDown() {
   let secondsToGo = 9;
   const modal = Modal.warning({
@@ -67,7 +68,6 @@ function Donor_donation_list() {
   const [newDonorlist, setnewDonorlist] = useState([]);
 
   const Editpopup = (value) => {
-    console.log("reccord", value);
     const scW = screen.width / 2;
     const scH = screen.height / 2;
     const appW = 1280;
