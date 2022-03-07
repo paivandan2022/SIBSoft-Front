@@ -166,10 +166,10 @@ function Donor_register() {
     console.log("value----->", value);
 
     const result = await api.post(`/Add_guest_donor`, {
+      ...value,
       birthday: moment(newStrBirthday).format("YYYY-MM-DD"),
       postcode: newZip,
-      value,
-      image: value.cid,
+      image: `${value.cid}.jpg`,
     });
     console.log("Data", value);
 
@@ -181,10 +181,7 @@ function Donor_register() {
     }
 
     await api.post("/image-upload-donor", image, {
-      params: { cid: `${result?.data?.Insertcid}.${fileType}` },
-    });
-    await api.put(`/update_pic_donor/${result?.data?.Insertcid}`, {
-      image: `${result?.data?.Insertcid}.${fileType}`,
+      params: { id: `${value.cid}.jpg` },
     });
   };
 
@@ -226,9 +223,6 @@ function Donor_register() {
       } else {
         setFileType(type);
       }
-
-      console.log("type====>", type);
-
       const formData = new FormData();
       formData.append(
         "my-image-file",
@@ -236,7 +230,6 @@ function Donor_register() {
         info.file.originFileObj.name
       );
       setImage(formData);
-
       getBase64(info.file.originFileObj, (imageUrl) => {
         setImageUrl(imageUrl);
         setLoadingUploadPic(false);
@@ -251,6 +244,7 @@ function Donor_register() {
   };
 
   /////////
+
   return (
     <>
       <Layout keyTab="Donor_register">

@@ -92,6 +92,7 @@ const import_blood = ({ computerName }) => {
   };
 
   const onFinishInsert = async (value) => {
+    const ip_init = await internalIpV4();
     try {
       const result = await api.post(`/Insert_Import_Blood`, {
         type_id: value.type_id,
@@ -108,6 +109,8 @@ const import_blood = ({ computerName }) => {
         unit_no: value.unit_no,
         note: value.note,
         staff_name: value.staff_name,
+        computer_name: computerName,
+        ip: ip_init,
       });
       console.log("result---", result);
 

@@ -45,28 +45,39 @@ function Donor_frmedit() {
   const [newCID, setnewCID] = useState();
   const router = useRouter();
 
-  console.log("-----router.query.id--------->", router.query.id);
-
   const Fetch_frmedit = async (value) => {
     console.log("--------------hjghjjhyuiyuij ", value);
     const result = await api.get("/Get_donor11", {
       params: {
-        id: id,
+        id: value,
       },
     });
 
+    console.log("====", result.data);
+
     setnewDonorlist(result.data);
+
+    frmAdd.setFieldsValue({
+      ...result.data[0],
+      chwpart: Number(result.data[0].chwpart),
+    });
+
+    setZip({
+      zipcode: result.data[0].postcode,
+    });
   };
 
   useEffect(async () => {
-    await fetch_pname();
-    await Fetch_Province();
-    await Fetch_Sex();
-    await Fetch_mary();
-    await Fetch_occu();
-    await Fetch_bloodgroup();
-    await Fetch_frmedit(router?.query?.id);
-  }, []);
+    if (router?.query?.id) {
+      await fetch_pname();
+      await Fetch_Province();
+      await Fetch_Sex();
+      await Fetch_mary();
+      await Fetch_occu();
+      await Fetch_bloodgroup();
+      await Fetch_frmedit(router?.query?.id);
+    }
+  }, [router?.query?.id]);
 
   const [newProvince, setProvince] = useState([]);
   const [newAmpure, setAmpure] = useState([]);
