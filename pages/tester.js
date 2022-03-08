@@ -146,7 +146,10 @@ const import_blood = ({ computerName }) => {
   };
 
   const fetchList = async () => {
-    const result = await api.get(`/Select_Import_Blood`);
+    const ip = await internalIpV4();
+    const result = await api.get(`/Select_Import_Blood`, {
+      params: { ip, computerName },
+    });
     const fetchList_blood = result.data;
     setListimport(fetchList_blood);
     console.log("===fetchList", result.data);
