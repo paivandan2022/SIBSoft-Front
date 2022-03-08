@@ -45,6 +45,20 @@ function Donor_frmedit() {
   const [newCID, setnewCID] = useState();
   const router = useRouter();
 
+  const [newProvince, setProvince] = useState([]);
+  const [newAmpure, setAmpure] = useState([]);
+  const [newTumbon, setTumbon] = useState([]);
+  const [newZip, setZip] = useState([]);
+  const [newBloodgroup, setBloodgroup] = useState([]);
+  const [newPname, setNewPname] = useState([]);
+  const [newSex, setSex] = useState([]);
+  const [newOccu, setOccu] = useState([]);
+  const [newMary, setMary] = useState([]);
+  const [strAge, setstrAge] = useState();
+  const [newStrBirthday, setStrBirthday] = useState();
+  const [frmAdd] = Form.useForm();
+  const [frmOpen] = Form.useForm();
+
   const Fetch_frmedit = async (value) => {
     console.log("--------------hjghjjhyuiyuij ", value);
     const result = await api.get("/Get_donor11", {
@@ -57,11 +71,16 @@ function Donor_frmedit() {
 
     setnewDonorlist(result.data);
 
-    frmAdd.setFieldsValue({
+    frmOpen.setFieldsValue({
       ...result.data[0],
       chwpart: Number(result.data[0].chwpart),
     });
-
+    setAmpure({
+      amppart: Number(result.data[0].amppart),
+    });
+    setTumbon({
+      tmbpart: Number(result.data[0].tmbpart),
+    });
     setZip({
       zipcode: result.data[0].postcode,
     });
@@ -78,19 +97,6 @@ function Donor_frmedit() {
       await Fetch_frmedit(router?.query?.id);
     }
   }, [router?.query?.id]);
-
-  const [newProvince, setProvince] = useState([]);
-  const [newAmpure, setAmpure] = useState([]);
-  const [newTumbon, setTumbon] = useState([]);
-  const [newZip, setZip] = useState([]);
-  const [frmAdd] = Form.useForm();
-  const [newBloodgroup, setBloodgroup] = useState([]);
-  const [newPname, setNewPname] = useState([]);
-  const [newSex, setSex] = useState([]);
-  const [newOccu, setOccu] = useState([]);
-  const [newMary, setMary] = useState([]);
-  const [strAge, setstrAge] = useState();
-  const [newStrBirthday, setStrBirthday] = useState();
 
   const fetch_pname = async () => {
     const result = await api.get("/pname_en_th");
@@ -131,7 +137,7 @@ function Donor_frmedit() {
       },
     });
     setAmpure(result.data);
-    frmAdd.setFieldsValue({
+    frmOpen.setFieldsValue({
       amppart: "",
       tmbpart: "",
     });
@@ -260,7 +266,7 @@ function Donor_frmedit() {
       <Layout>
         <Header></Header>
         <Content>
-          <Form form={frmAdd}>
+          <Form form={frmOpen}>
             <Space direction="vertical" style={{ width: "100%" }}>
               <div className="frmedit">
                 <Card title="ลงทะเบียนผู้บริจาคเลือด" bordered={false}>

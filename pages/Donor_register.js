@@ -12,7 +12,9 @@ import {
   Spin,
   Upload,
 } from "antd";
+import th_TH from "antd/lib/date-picker/locale/th_TH";
 import moment from "moment";
+import "moment/locale/th";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 import { Layout } from "../components";
@@ -167,11 +169,12 @@ function Donor_register() {
 
     const result = await api.post(`/Add_guest_donor`, {
       ...value,
+
       birthday: moment(newStrBirthday).format("YYYY-MM-DD"),
       postcode: newZip,
       image: `${value.cid}.jpg`,
     });
-    console.log("Data", value);
+    console.log("Data=========>>", value);
 
     if (result.data === "OK") {
       success();
@@ -283,9 +286,6 @@ function Donor_register() {
                         )}
                       </Spin>
                     </Upload>
-                    {/* <Upload name="logo" action="/" listType="picture">
-                      <Button icon={<UploadOutlined />}>รูปประจำตัว</Button>
-                    </Upload> */}
                   </Form.Item>
                 </Card>
               </Col>
@@ -551,6 +551,8 @@ function Donor_register() {
                         name="birthday"
                         onChange={setDate}
                         format="DD-MM-YYYY"
+                        locale={th_TH}
+                        placeholder="เลือกวันเกิด"
                       />
                       <Input
                         label="อายุ"
