@@ -379,8 +379,8 @@ const import_blood = ({ computerName }) => {
     },
     {
       title: "สถานะ",
-      dataIndex: "status",
-      key: "status",
+      dataIndex: "status_name",
+      key: "status_name",
       align: "center",
     },
     {
@@ -557,7 +557,7 @@ const import_blood = ({ computerName }) => {
                 <Form.Item name="volume">
                   <Input
                     style={{ width: "50%" }}
-                    prefix="ปริมาณ | "
+                    prefix="ปริมาณ : "
                     suffix="ml."
                     size="large"
                   />
