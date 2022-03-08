@@ -61,7 +61,7 @@ function Donor_frmedit() {
 
   const Fetch_frmedit = async (value) => {
     console.log("--------------hjghjjhyuiyuij ", value);
-    const result = await api.get("/Get_donor11", {
+    const result = await api.get("/Get_donor_list", {
       params: {
         id: value,
       },

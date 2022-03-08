@@ -253,8 +253,8 @@ function Donor_register() {
       <Layout keyTab="Donor_register">
         <div className="site-card-wrapper">
           <Form onFinish={onFinishAdduser} form={frmAdd}>
-            <Row gutter={16}>
-              <Col span={8} style={{ textAlign: "center" }}>
+            <Row gutter={16} justify="center">
+              <Col span={4} style={{ textAlign: "center" }}>
                 <Card title="รูปภาพ" bordered={false}>
                   <Form.Item name="image" extra="ใส่หรือไม่ใส่ก็ได้">
                     <Upload
@@ -290,7 +290,11 @@ function Donor_register() {
                 </Card>
               </Col>
               <Col span={16}>
-                <Card title="เลขประจำตัว" bordered={false}>
+                <Card
+                  title="เลขประจำตัว"
+                  bordered={false}
+                  style={{ height: "100%" }}
+                >
                   <Form.Item
                     name="cid"
                     label="เลขประจำตัวประชาชน"
@@ -326,8 +330,8 @@ function Donor_register() {
               </Col>
             </Row>
             <br />
-            <Row gutter={24}>
-              <Col span={24}>
+            <Row gutter={24} justify="center">
+              <Col span={20}>
                 <Card title="ข้อมูลส่วนบุคคล" bordered={false}>
                   <Form.Item
                     label="หมู่ของกรุ๊ปเลือด"
@@ -344,7 +348,11 @@ function Donor_register() {
                         textAlign: "center",
                       }}
                     >
-                      <Select placeholder="กรุ๊ปเลือด">
+                      <Select
+                        placeholder="กรุ๊ปเลือด"
+                        size="large"
+                        style={{ width: "60%" }}
+                      >
                         {newBloodgroup.map((item) => (
                           <Option key={item.blood_id} value={item.blood_name}>
                             {item.blood_name}
@@ -366,6 +374,7 @@ function Donor_register() {
                         display: "inline-block",
                         width: "calc(20% - 8px)",
                         margin: "0 8px",
+                        width: "12%",
                       }}
                     >
                       <Select placeholder="เลือกคำนำหน้า">
@@ -412,6 +421,7 @@ function Donor_register() {
                         display: "inline-block",
                         width: "calc(20% - 8px)",
                         margin: "0 8px",
+                        width: "12%",
                       }}
                     >
                       <Select placeholder="SELECT PREFIX">
@@ -431,7 +441,7 @@ function Donor_register() {
                         width: "calc(35% - 8px)",
                       }}
                     >
-                      <Input placeholder="ชื่อจริง" />
+                      <Input placeholder="Frist name" />
                     </Form.Item>
                     <Form.Item
                       name="lname_en"
@@ -443,7 +453,7 @@ function Donor_register() {
                         margin: "0 8px",
                       }}
                     >
-                      <Input placeholder="นามสกุล" />
+                      <Input placeholder="Last name" />
                     </Form.Item>
                   </Form.Item>
                   <Form.Item
@@ -456,8 +466,8 @@ function Donor_register() {
                       rules={[{ required: true }]}
                       style={{
                         display: "inline-block",
-                        width: "calc(20% - 8px)",
                         margin: "0 8px",
+                        width: "12%",
                       }}
                     >
                       <Select placeholder="เลือกเพศ">
@@ -474,8 +484,8 @@ function Donor_register() {
                       rules={[{ required: false }]}
                       style={{
                         display: "inline-block",
-                        width: "calc(35% - 8px)",
                         margin: "0 8px",
+                        width: "12%",
                       }}
                     >
                       <Select placeholder="เลือกสถานะ">
@@ -492,8 +502,8 @@ function Donor_register() {
                       rules={[{ required: false }]}
                       style={{
                         display: "inline-block",
-                        width: "calc(35% - 8px)",
-                        margin: "0 8px",
+                        margin: "0px 8px",
+                        width: "25%",
                       }}
                     >
                       <Select placeholder="เลือกอาชีพ">
@@ -517,6 +527,7 @@ function Donor_register() {
                       style={{
                         display: "inline-block",
                         width: "calc(45% - 8px)",
+                        width: "20%",
                       }}
                     >
                       <Input placeholder="โทรศัพท์" />
@@ -528,8 +539,8 @@ function Donor_register() {
                       rules={[{ required: false }]}
                       style={{
                         display: "inline-block",
-                        width: "calc(48% - 8px)",
-                        margin: "0 8px",
+                        margin: "0px 8px",
+                        width: "25%",
                       }}
                     >
                       <Input placeholder="Email" />
@@ -553,17 +564,19 @@ function Donor_register() {
                         format="DD-MM-YYYY"
                         locale={th_TH}
                         placeholder="เลือกวันเกิด"
+                        style={{ width: "15%" }}
+                        size="large"
                       />
                       <Input
                         label="อายุ"
                         name="age"
-                        // rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
                           width: "calc(22% - 8px)",
                           margin: "0 8px",
                           top: "0px",
                           textAlign: "center",
+                          width: "10%",
                         }}
                         placeholder="อายุ"
                         value={strAge}
@@ -576,8 +589,8 @@ function Donor_register() {
               </Col>
             </Row>
             <br />
-            <Row gutter={24}>
-              <Col span={24}>
+            <Row gutter={24} justify="center">
+              <Col span={20}>
                 <Card title="ที่พักอาศัย" bordered={false}>
                   <Form.Item
                     label="ที่อยู่ปัจจุบัน"

@@ -186,11 +186,16 @@ const import_blood = ({ computerName }) => {
 
   /////////////////////////
   const Delete_data = async (value) => {
-    console.log("record?.id", value);
-    const result = await api.delete(`/Delete_Import_Blood`, {
-      params: { id: value },
+    Modal.confirm({
+      title: "Are you sure !",
+      content: "Delete Record",
+      onOk: async () => {
+        const result = await api.delete(`/Delete_Import_Blood`, {
+          params: { id: value },
+        });
+        fetchList();
+      },
     });
-    fetchList();
   };
   // //Refresh ข้อมูลปุ่มหมู่เลือด ทุก 1000=1วิ วินาที
   // useEffect(() => {
@@ -321,6 +326,8 @@ const import_blood = ({ computerName }) => {
       title: "ลำดับ",
       dataIndex: "",
       key: "",
+      align: "center",
+      width: 90,
       render: (text, record, index) => {
         return index + 1;
       },
@@ -329,16 +336,19 @@ const import_blood = ({ computerName }) => {
       title: "เลขที่ถุงเลือด",
       dataIndex: "blood_no",
       key: "blood_no",
+      align: "center",
     },
     {
       title: "ชนิดเลือด",
       dataIndex: "s_name",
       key: "s_name",
+      align: "center",
     },
     {
       title: "หมู่เลือด",
       dataIndex: "blood_group",
       key: "",
+      align: "center",
       render: (text, record, index) => {
         return `${record.blood_group}${record.blood_rh}`;
       },
@@ -347,36 +357,45 @@ const import_blood = ({ computerName }) => {
       title: "ปริมาณ",
       dataIndex: "blood_value",
       key: "blood_value",
+      align: "center",
     },
     {
       title: "วันที่รับ",
       dataIndex: "unit_receive",
       key: "unit_receive",
+      align: "center",
     },
     {
       title: "วันหมดอายุ",
       dataIndex: "unit_exp",
       key: "unit_exp",
+      align: "center",
     },
     {
       title: "รับมาจาก",
       dataIndex: "hos_long_name_th",
       key: "hos_long_name_th",
+      align: "center",
     },
     {
       title: "สถานะ",
       dataIndex: "status",
       key: "status",
+      align: "center",
     },
     {
       title: "ลบ",
       dataIndex: "",
       key: "delete",
+      align: "center",
+      width: 100,
       render: (text, record) => (
-        <AiOutlineDelete
-          style={{ fontSize: "25px", color: "#FF6633" }}
-          onClick={() => Delete_data(record.id)}
-        />
+        <Button type="text">
+          <AiOutlineDelete
+            style={{ fontSize: "25px", color: "#FF6633" }}
+            onClick={() => Delete_data(record.id)}
+          />
+        </Button>
       ),
     },
   ];
@@ -416,7 +435,12 @@ const import_blood = ({ computerName }) => {
             <Row justify="center">
               <Col span={8}>
                 <Form.Item label="ชนิด" name="type_id">
-                  <Select onChange={onChangeTypeID}>
+                  <Select
+                    onChange={onChangeTypeID}
+                    placeholder="ชนิด"
+                    size="large"
+                    style={{ width: "65%" }}
+                  >
                     {opttype?.map((item) => (
                       <Option key={item.id} value={item.id}>
                         {item.s_name}
@@ -425,7 +449,11 @@ const import_blood = ({ computerName }) => {
                   </Select>
                 </Form.Item>
                 <Form.Item label="รับเลือดจาก" name="hos_id">
-                  <Select>
+                  <Select
+                    placeholder="รับเลือดจาก"
+                    size="large"
+                    style={{ width: "65%" }}
+                  >
                     {senderBlood?.map((item) => (
                       <Option key={item.hos_id} value={item.hos_id}>
                         {item.hos_shot_name_th}
@@ -434,7 +462,7 @@ const import_blood = ({ computerName }) => {
                   </Select>
                 </Form.Item>
                 <Form.Item label="ประเภทถุง" name="bag_type_id">
-                  <Select>
+                  <Select size="large" style={{ width: "65%" }}>
                     {bagType?.map((item) => (
                       <Option key={item.bagcode} value={item.bagcode}>
                         {item.bagtype}
@@ -443,7 +471,7 @@ const import_blood = ({ computerName }) => {
                   </Select>
                 </Form.Item>
                 <Form.Item label="น้ำยา" name="liquid_id">
-                  <Select>
+                  <Select size="large" style={{ width: "65%" }}>
                     {blood_liquid?.map((item) => (
                       <Option key={item.id} value={item.id}>
                         {item.name}
@@ -454,29 +482,30 @@ const import_blood = ({ computerName }) => {
                 <br />
                 <Form.Item label="วันเจาะ" name="date_collect">
                   <DatePicker
-                    style={{ width: "100%" }}
+                    style={{ width: "65%" }}
                     format="DD-MM-YYYY"
                     onChange={CalExpdate}
                     locale={th_TH}
+                    size="large"
                   />
                 </Form.Item>
                 <Form.Item label="จำนวนวันหมดอายุ" name="time_exp">
-                  <Input disabled />
+                  <Input style={{ width: "30%" }} suffix="วัน" disabled />
                 </Form.Item>
                 <Form.Item label="วันหมดอายุ" name="date_exp">
                   <DatePicker
-                    style={{ width: "100%" }}
+                    style={{ width: "65%" }}
                     format="DD-MM-YYYY"
                     locale={th_TH}
+                    size="large"
                   />
                 </Form.Item>
                 <Form.Item label="เวลาหมดอายุ" name="exp_time">
-                  <TimePicker />
+                  <TimePicker style={{ width: "65%" }} size="large" />
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col span={8} style={{ textAlign: "center" }}>
                 <Form.Item
-                  label="Group"
                   name="blood_group"
                   rules={[
                     {
@@ -489,6 +518,9 @@ const import_blood = ({ computerName }) => {
                     className="select-group"
                     dropdownClassName="select-group-option"
                     disabled={disabledGr}
+                    size="large"
+                    style={{ width: "65%" }}
+                    placeholder="Group"
                   >
                     {blood_name?.map((item) => (
                       <Option key={item.blood_name} value={item.blood_name}>
@@ -499,7 +531,6 @@ const import_blood = ({ computerName }) => {
                 </Form.Item>
 
                 <Form.Item
-                  label="rh"
                   name="blood_rh"
                   rules={[
                     {
@@ -512,6 +543,9 @@ const import_blood = ({ computerName }) => {
                     className="select-groupRh"
                     dropdownClassName="select-group-optionRh"
                     disabled={disabledRh}
+                    size="large"
+                    style={{ width: "50%" }}
+                    placeholder="rh"
                   >
                     {rh_name?.map((item) => (
                       <Option key={item.rh_shot_name} value={item.rh_shot_name}>
@@ -520,21 +554,31 @@ const import_blood = ({ computerName }) => {
                     ))}
                   </Select>
                 </Form.Item>
-                <Form.Item label="ปริมาณ" name="volume">
-                  <Input suffix="ml." />
+                <Form.Item name="volume">
+                  <Input
+                    style={{ width: "50%" }}
+                    prefix="ปริมาณ | "
+                    suffix="ml."
+                    size="large"
+                  />
                 </Form.Item>
                 <Form.Item
-                  label={<h2>เลขที่ถุงเลือด</h2>}
+                  // label={<h2>เลขที่ถุงเลือด</h2>}
                   name="unit_no"
                   id="unit_no"
                 >
-                  <Input className="ant-input-lg" size="large" />
+                  <Input
+                    className="ant-input-lg"
+                    style={{ width: "75%" }}
+                    size="large"
+                    placeholder="เลขที่ถุงเลือด"
+                  />
                 </Form.Item>
               </Col>
 
               <Col span={8}>
                 <Form.Item label="ผู้ทำรายการ" name="staff_name">
-                  <Select style={{ width: "100%" }}>
+                  <Select style={{ width: "65%" }} size="large">
                     {staff_name?.map((item) => (
                       <Option value={item.staff}>{item.staff}</Option>
                     ))}
@@ -542,14 +586,19 @@ const import_blood = ({ computerName }) => {
                 </Form.Item>
                 <Form.Item label="วันที่รับ" name="date_received">
                   <DatePicker
-                    style={{ width: "100%" }}
+                    style={{ width: "65%" }}
                     format="DD-MM-YYYY"
                     locale={th_TH}
+                    size="large"
                   />
                 </Form.Item>
 
                 <Form.Item label="หมายเหตุ" name="note">
-                  <TextArea style={{ height: 120 }} showCount maxLength={250} />
+                  <TextArea
+                    style={{ height: 120, width: "75%" }}
+                    showCount
+                    maxLength={250}
+                  />
                 </Form.Item>
                 <br />
                 <Row justify="end">
@@ -570,13 +619,14 @@ const import_blood = ({ computerName }) => {
             </Row>
           </Form>
         </div>
-        <Row>
+        <Row justify="center">
           <Col span={24}>
             <Table
               columns={columnImport}
               dataSource={listimport}
+              bordered
               pagination={false}
-              scroll={{ y: 500 }}
+              scroll={{ y: 700 }}
             />
           </Col>
         </Row>
