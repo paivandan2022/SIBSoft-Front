@@ -7,6 +7,7 @@ import {
   Modal,
   Row,
   Select,
+  Space,
   Table,
   TimePicker,
   Typography,
@@ -129,20 +130,27 @@ const import_blood = ({ computerName }) => {
   };
 
   const onFinishUpdate = async () => {
-    const ip = await internalIpV4();
-    const ids = listimport.map((item) => item.id);
-    console.log("ids", ids);
-    console.log("IPV4", ip);
-    console.log("computerName", computerName);
+    Modal.confirm({
+      title: "Are you sure !",
+      content: "Save Data",
+      onOk: async () => {
+        const ip = await internalIpV4();
+        const ids = listimport.map((item) => item.id);
+        console.log("ids", ids);
+        console.log("IPV4", ip);
+        console.log("computerName", computerName);
 
-    const result = await api.put(`/Update_Import_Blood`, {
-      ids: ids,
-      ip,
-      computerName,
+        const result = await api.put(`/Update_Import_Blood`, {
+          ids: ids,
+          ip,
+          computerName,
+        });
+        console.log("===result", result);
+        fetchList();
+      },
     });
-    console.log("===result", result);
+
     //state
-    fetchList();
   };
 
   const fetchList = async () => {
@@ -380,14 +388,17 @@ const import_blood = ({ computerName }) => {
           <Col span={18}>
             <Title level={2}>Import Blood</Title>
           </Col>
+
           <Col span={6}>
-            <Button className="btn-color-a">A : {ABOCountAll?.A}</Button>
-            <Button className="btn-color-b">B : {ABOCountAll?.B}</Button>
-            <Button className="btn-color-o">O : {ABOCountAll?.O}</Button>
-            <Button className="btn-color-ab">AB : {ABOCountAll?.AB}</Button>
-            <Button className="btn-color-cryo">
-              ไม่ระบุ : {ABOCountAll?.CryO}
-            </Button>
+            <Space>
+              <Button className="btn-color-a">A : {ABOCountAll?.A}</Button>
+              <Button className="btn-color-b">B : {ABOCountAll?.B}</Button>
+              <Button className="btn-color-o">O : {ABOCountAll?.O}</Button>
+              <Button className="btn-color-ab">AB : {ABOCountAll?.AB}</Button>
+              <Button className="btn-color-cryo">
+                ไม่ระบุ : {ABOCountAll?.CryO}
+              </Button>
+            </Space>
           </Col>
         </Row>
 

@@ -254,7 +254,7 @@ function Donor_register() {
         <div className="site-card-wrapper">
           <Form onFinish={onFinishAdduser} form={frmAdd}>
             <Row gutter={16}>
-              <Col span={8}>
+              <Col span={8} style={{ textAlign: "center" }}>
                 <Card title="รูปภาพ" bordered={false}>
                   <Form.Item name="image" extra="ใส่หรือไม่ใส่ก็ได้">
                     <Upload
