@@ -9,8 +9,11 @@ import {
   Button,
   Col,
   DatePicker,
+  Form,
+  Input,
   Modal,
   PageHeader,
+  Radio,
   Row,
   Select,
   Space,
@@ -19,8 +22,9 @@ import {
   Tooltip,
   Typography,
 } from "antd";
+import th_TH from "antd/lib/date-picker/locale/th_TH";
 import moment from "moment";
-import Link from "next/link";
+import "moment/locale/th";
 import { useEffect, useState } from "react";
 import { Layout } from "../components";
 import api from "../lib/api";
@@ -29,7 +33,7 @@ const { RangePicker } = DatePicker;
 
 const { Option } = Select;
 
-function countDown() {
+const countDown = () => {
   let secondsToGo = 9;
   const modal = Modal.warning({
     title: "แจ้งเตือนจากระบบ",
@@ -45,7 +49,7 @@ function countDown() {
     clearInterval(timer);
     modal.destroy();
   }, secondsToGo * 1000);
-}
+};
 
 const tabListNoTitle = [
   {
@@ -68,9 +72,9 @@ const contentListNoTitle = {
   project: <p>project content</p>,
 };
 
-function Donor_donation_list() {
+const Donor_donation_list = () => {
   const [newDonorlist, setnewDonorlist] = useState([]);
-
+  const [frmSearch] = Form.useForm();
   const Editpopup = (value) => {
     const scW = screen.width / 2;
     const scH = screen.height / 2;
@@ -242,33 +246,52 @@ function Donor_donation_list() {
           </Col>
         </Row>
         <Row>
-          <Col xs={{ span: 5, offset: 1 }} lg={{ span: 8, offset: 2 }}>
-            <label>
-              <Text strong>ค้นหาตามวันที่ : &nbsp;</Text>
-            </label>
-            <input type="date"></input>
-            <label>
-              <Text strong>&nbsp;ถึง &nbsp;</Text>
-            </label>
-            <input type="date"></input>
-          </Col>
-          <Col xs={{ span: 11, offset: 1 }} lg={{ span: 6, offset: 2 }}>
-            <label>
-              <Text strong>ค้นหาตามเลขประจำตัว : &nbsp;</Text>
-            </label>
-            <input></input>
-          </Col>
-          <Col xs={{ span: 5, offset: 1 }} lg={{ span: 4, offset: 2 }}>
-            <Link href="/Donor_register">
-              <Button type="primary">ลงทะเบียนผู้มาบริจาค</Button>
-            </Link>
-          </Col>
+          <Form
+            form={frmSearch}
+            layout="inline"
+            onFinish={""}
+            initialValues={{
+              date_Search: [moment(), moment()],
+            }}
+          >
+            <Form.Item name="date_type">
+              <Radio.Group>
+                <Radio value="date_collect">วันที่เจาะ</Radio>
+                <Radio value="date_receive">วันที่รับ</Radio>
+                <Radio value="date_expired">วันหมดอายุ</Radio>
+              </Radio.Group>
+            </Form.Item>
+            <Form.Item name="date_Search">
+              <RangePicker
+                placeholder={["วันเริ่ม", "วันสุดท้าย"]}
+                format="DD-MM-YYYY"
+                locale={th_TH}
+              />
+            </Form.Item>
+            <Form.Item name="unit_no">
+              <Input placeholder="Unit No" />
+            </Form.Item>
+            <Form.Item name="antibody">
+              <Input placeholder="Antibody / Antigen" />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Search
+              </Button>
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" danger>
+                {/* onClick={ClearSearch} */}
+                Clear
+              </Button>
+            </Form.Item>
+          </Form>
         </Row>
         <br />
         <Table columns={columns} dataSource={newDonorlist} />
       </Layout>
     </>
   );
-}
+};
 
 export default Donor_donation_list;
