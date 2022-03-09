@@ -55,8 +55,6 @@ function Donor_frmedit() {
   const [strAge, setstrAge] = useState();
   const [newStrBirthday, setStrBirthday] = useState();
 
-  // console.log("-----router.query.id--------->", router.query.id);
-
   const onChange = (e) => {
     console.log(`checked = ${e.target.checked}`);
     if (e.target.checked) {
@@ -69,7 +67,7 @@ function Donor_frmedit() {
   };
 
   const Fetch_frmedit = async (value) => {
-    console.log("--------------hjghjjhyuiyuij ", value);
+    console.log("--------------CID ", value);
     const result = await api.get("/Get_donor_list", {
       params: {
         id: value,
@@ -113,8 +111,6 @@ function Donor_frmedit() {
     const result = await api.get("/pname_en_th");
     const txt = result.data;
     setNewPname(txt);
-    // console.log("==onFinishEditUser==", txt);
-    //
   };
 
   const Fetch_Sex = async () => {
@@ -365,7 +361,6 @@ function Donor_frmedit() {
                       </Col>
                       <Col className="gutter-row" span={6}>
                         <div>
-                          {console.log("=========newDonorlist", newDonorlist)}
                           <Image
                             width={250}
                             src={`http://localhost:3306/image/${
