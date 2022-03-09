@@ -696,7 +696,11 @@ const import_blood = ({ computerName }) => {
         </Row>
         <br />
         <Row justify="end">
-          <Button type="primary" onClick={showModalView}>
+          <Button
+            type="primary"
+            onClick={showModalView}
+            disabled={listimport?.length === 0}
+          >
             ยืนยัน
           </Button>
         </Row>
