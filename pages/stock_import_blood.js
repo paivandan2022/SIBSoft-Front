@@ -72,18 +72,19 @@ const import_blood = ({ computerName }) => {
       title: "ประเภท",
       dataIndex: "Type",
       key: "Type",
+      width: "15%",
     },
     {
       title: "จำนวน",
       dataIndex: "Type_num",
       key: "Type_num",
+      align: "center",
+      width: "20%",
     },
   ];
   const handleOkView = async () => {
-    const user_name = user.getUser().user_name;
     // ส่ง user_name and password
-    const resultLogin = await api.post(`/signin`, {
-      user_name: user_name,
+    const resultLogin = await api.post(`/Confirm_password`, {
       password: password,
     });
     console.log("resultLogin", resultLogin);
@@ -95,7 +96,7 @@ const import_blood = ({ computerName }) => {
 
       const result = await api.put(`/Update_Import_Blood`, {
         ids: ids,
-        //ip,
+        staff: resultLogin.data.fname + " " + resultLogin.data.lname,
         // computerName,
       });
       console.log("===result", result);
