@@ -134,10 +134,10 @@ const import_blood = ({ computerName }) => {
     const result = await api.get("/Rh_Name");
     setRhName(result.data[0]);
   };
-  const LoadStaffName = async () => {
-    const result = await api.get("/Staff_Name");
-    setStaffName(result.data);
-  };
+  // const LoadStaffName = async () => {
+  //   const result = await api.get("/Staff_Name");
+  //   setStaffName(result.data);
+  // };
   const LoadBloodLiquid = async () => {
     const result = await api.get("/Blood_Liquid");
     setBloodLiquid(result.data);
@@ -148,7 +148,7 @@ const import_blood = ({ computerName }) => {
     await LoadBagType();
     await LoadBloodName();
     await LoadRhName();
-    await LoadStaffName();
+    // await LoadStaffName();
     await LoadBloodLiquid();
   }, []);
 
@@ -173,7 +173,7 @@ const import_blood = ({ computerName }) => {
         volume: value.volume,
         unit_no: value.unit_no,
         note: value.note,
-        staff_name: value.staff_name,
+        // staff_name: value.staff_name,
         computer_name: computerName,
         ip: ip_init,
       });
@@ -469,7 +469,7 @@ const import_blood = ({ computerName }) => {
       <Layout keyTab="stock_import_blood">
         <Row>
           <Col span={18}>
-            <Title level={2}>Import Blood</Title>
+            <Title level={2}>นำเลือดเข้าระบบ</Title>
           </Col>
 
           <Col span={6}>
@@ -641,13 +641,13 @@ const import_blood = ({ computerName }) => {
               </Col>
 
               <Col span={8}>
-                <Form.Item label="ผู้ทำรายการ" name="staff_name">
+                {/* <Form.Item label="ผู้ทำรายการ" name="staff_name">
                   <Select style={{ width: "65%" }} size="large">
                     {staff_name?.map((item) => (
                       <Option value={item.staff}>{item.staff}</Option>
                     ))}
                   </Select>
-                </Form.Item>
+                </Form.Item> */}
                 <Form.Item label="วันที่รับ" name="date_received">
                   <DatePicker
                     style={{ width: "65%" }}
