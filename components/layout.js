@@ -43,6 +43,9 @@ const Main = ({ children, keyTab }) => {
       case "stock_blood":
         Router.push("/stock_blood");
         break;
+      case "stock_import_blood":
+        Router.push("/stock_import_blood");
+        break;
       case "stock_blooddetails":
         Router.push("/stock_blooddetails");
         break;
@@ -107,6 +110,7 @@ const Main = ({ children, keyTab }) => {
             </SubMenu>
             <SubMenu key="sub2" icon={<StockOutlined />} title="BLOOD STOCK">
               <Menu.Item key="stock_blood">คลังเลือด</Menu.Item>
+              <Menu.Item key="stock_import_blood">รับเลือดเข้าระบบ</Menu.Item>
               <Menu.Item key="stock_blooddetails">รายละเอียดเลือด</Menu.Item>
               <Menu.Item key="2">ปลดเลือด</Menu.Item>
               <Menu.Item key="10">คืนเลือด</Menu.Item>

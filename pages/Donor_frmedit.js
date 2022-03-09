@@ -36,12 +36,8 @@ const { Text, Link } = Typography;
 const { Header, Footer, Content } = Layout;
 const style = { background: "#0092ff", padding: "8px 0" };
 
-function onChange(e) {
-  console.log(`checked = ${e.target.checked}`);
-}
-
 function Donor_frmedit() {
-  const [newDonorlist, setnewDonorlist] = useState([]);
+  const [newDonorlist, setnewDonorlist] = useState({});
   const [newCID, setnewCID] = useState();
   const router = useRouter();
 
@@ -49,6 +45,8 @@ function Donor_frmedit() {
   const [newAmpure, setAmpure] = useState([]);
   const [newTumbon, setTumbon] = useState([]);
   const [newZip, setZip] = useState([]);
+  const [frmAdd] = Form.useForm();
+  const [frmOpen] = Form.useForm();
   const [newBloodgroup, setBloodgroup] = useState([]);
   const [newPname, setNewPname] = useState([]);
   const [newSex, setSex] = useState([]);
@@ -56,8 +54,19 @@ function Donor_frmedit() {
   const [newMary, setMary] = useState([]);
   const [strAge, setstrAge] = useState();
   const [newStrBirthday, setStrBirthday] = useState();
-  const [frmAdd] = Form.useForm();
-  const [frmOpen] = Form.useForm();
+
+  // console.log("-----router.query.id--------->", router.query.id);
+
+  const onChange = (e) => {
+    console.log(`checked = ${e.target.checked}`);
+    if (e.target.checked) {
+      const formData = frmOpen.getFieldsValue();
+      console.log("formData", formData);
+      frmOpen.setFieldsValue({
+        addrpart_new: formData.addrpart,
+      });
+    }
+  };
 
   const Fetch_frmedit = async (value) => {
     console.log("--------------hjghjjhyuiyuij ", value);
@@ -67,19 +76,21 @@ function Donor_frmedit() {
       },
     });
 
-    console.log("====", result.data);
-
-    setnewDonorlist(result.data);
+    setnewDonorlist(result.data[0]);
+    Fetch_Aumpure(result.data[0].chwpart);
+    Fetch_Tumbon(result.data[0].amppart);
+    Fetch_Zip(result.data[0].tmbpart);
+    console.log("dddddfdf", result.data);
 
     frmOpen.setFieldsValue({
       ...result.data[0],
       chwpart: Number(result.data[0].chwpart),
-    });
-    setAmpure({
-      amppart: Number(result.data[0].amppart),
-    });
-    setTumbon({
-      tmbpart: Number(result.data[0].tmbpart),
+      job: Number(result.data[0].job),
+      amppart: Number(result.data[0]?.amppart),
+      dob: moment(result.data[0]?.dob),
+      tmbpart: result.data[0]?.tmbpart,
+      age: result.data[0].age,
+      marrystatus: Number(result.data[0].marrystatus),
     });
     setZip({
       zipcode: result.data[0].postcode,
@@ -131,13 +142,15 @@ function Donor_frmedit() {
   };
 
   const Fetch_Aumpure = async (value) => {
+    console.log("cccc", value);
     const result = await api.get("/Get_Aumpure", {
       params: {
         PROVINCE_ID: value,
       },
     });
     setAmpure(result.data);
-    frmOpen.setFieldsValue({
+
+    frmAdd.setFieldsValue({
       amppart: "",
       tmbpart: "",
     });
@@ -146,11 +159,13 @@ function Donor_frmedit() {
   };
 
   const Fetch_Tumbon = async (value) => {
+    console.log("logggg", value);
     const result = await api.get("/Get_Tumbon", {
       params: {
         AMPHUR_ID: value,
       },
     });
+
     setTumbon(result.data);
     console.log("ตำบล", result.data);
   };
@@ -350,9 +365,12 @@ function Donor_frmedit() {
                       </Col>
                       <Col className="gutter-row" span={6}>
                         <div>
+                          {console.log("=========newDonorlist", newDonorlist)}
                           <Image
                             width={250}
-                            src="https://www.w3schools.com/howto/img_avatar.png"
+                            src={`http://localhost:3306/image/${
+                              newDonorlist?.image
+                            }?pathType=2&date=${moment().format("HHmmss")}`}
                           />
                         </div>
                       </Col>
@@ -363,7 +381,7 @@ function Donor_frmedit() {
                     >
                       <Form.Item
                         label=""
-                        name="group"
+                        name="bloodgroup"
                         rules={[{ required: false }]}
                         style={{
                           display: "inline-block",
@@ -569,43 +587,35 @@ function Donor_frmedit() {
                         <Input placeholder="Email" />
                       </Form.Item>
                     </Form.Item>
-                    <Form.Item
+                    <div
                       label="วันเดือนปีเกิด"
                       style={{ marginBottom: 0 }}
+                    ></div>
+                    <Form.Item
+                      // {...config}
+                      name="dob"
+                      label="เลือกวันที่เพื่อคำนวณอายุ"
+                      // rules={[{ required: true }]}
+                      style={{
+                        display: "inline-block",
+                        width: "calc(100% - 20px)",
+                        margin: "0 20px",
+                      }}
                     >
-                      <Form.Item
-                        name="birthday"
-                        // {...config}
-                        label="เลือกวันที่เพื่อคำนวณอายุ"
-                        // rules={[{ required: true }]}
-                        style={{
-                          display: "inline-block",
-                          width: "calc(100% - 20px)",
-                          margin: "0 20px",
-                        }}
-                      >
-                        <DatePicker
-                          name="birthday"
-                          onChange={setDate}
-                          format="DD-MM-YYYY"
-                        />
-                        <Input
-                          label="อายุ"
-                          name="age"
-                          // rules={[{ required: true }]}
-                          style={{
-                            display: "inline-block",
-                            width: "calc(22% - 8px)",
-                            margin: "0 8px",
-                            top: "0px",
-                            textAlign: "center",
-                          }}
-                          placeholder="อายุ"
-                          value={strAge}
-                          disabled
-                        />
-                      </Form.Item>
+                      <DatePicker onChange={setDate} format="DD-MM-YYYY" />
                     </Form.Item>
+                    <Form.Item
+                      name="age"
+                      label="อายุ"
+                      rules={[{ required: false }]}
+                      style={{
+                        display: "inline-block",
+                        width: "calc(45% - 8px)",
+                      }}
+                    >
+                      <Input placeholder="อายุ" disabled />
+                    </Form.Item>
+
                     <br />
                     <Card title="ที่อยู่ตามบัตรประชาชน" bordered={false}>
                       <Form.Item
@@ -688,7 +698,7 @@ function Donor_frmedit() {
                         }}
                       >
                         <Select onChange={Fetch_Tumbon}>
-                          {newAmpure.map((item) => (
+                          {newAmpure?.map((item) => (
                             <Option key={item.AMPHUR_ID} value={item.AMPHUR_ID}>
                               {item.AMPHUR_NAME}
                             </Option>
@@ -740,7 +750,7 @@ function Donor_frmedit() {
                       </Checkbox>
                       <br />
                       <Form.Item
-                        name="addrpart"
+                        name="addrpart_new"
                         label="บ้านเลขที่"
                         //   rules={[{ required: true }]}
                         style={{
@@ -752,7 +762,7 @@ function Donor_frmedit() {
                         <Input placeholder="บ้านเลขที่" />
                       </Form.Item>
                       <Form.Item
-                        name="soipart"
+                        name="soipart_new"
                         label="ซอย"
                         rules={[{ required: false }]}
                         style={{
@@ -764,7 +774,7 @@ function Donor_frmedit() {
                         <Input placeholder="ซอย" />
                       </Form.Item>
                       <Form.Item
-                        name="moopart"
+                        name="moopart_new"
                         label="หมู่"
                         rules={[{ required: false }]}
                         style={{
@@ -776,7 +786,7 @@ function Donor_frmedit() {
                         <Input placeholder="หมู่" />
                       </Form.Item>
                       <Form.Item
-                        name="roadpart"
+                        name="roadpart_new"
                         label="ถนน"
                         rules={[{ required: false }]}
                         style={{
@@ -789,7 +799,7 @@ function Donor_frmedit() {
                       </Form.Item>
                       <Form.Item
                         label="จังหวัด"
-                        name="chwpart"
+                        name="chwpart_new"
                         //   rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
@@ -810,7 +820,7 @@ function Donor_frmedit() {
                       </Form.Item>
                       <Form.Item
                         label="อำเภอ"
-                        name="amppart"
+                        name="amppart_new"
                         //   rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
@@ -819,7 +829,7 @@ function Donor_frmedit() {
                         }}
                       >
                         <Select onChange={Fetch_Tumbon}>
-                          {newAmpure.map((item) => (
+                          {newAmpure?.map((item) => (
                             <Option key={item.AMPHUR_ID} value={item.AMPHUR_ID}>
                               {item.AMPHUR_NAME}
                             </Option>
@@ -829,7 +839,7 @@ function Donor_frmedit() {
                       <Form.Item
                         className="sss"
                         label="ตำบล"
-                        name="tmbpart"
+                        name="tmbpart_new"
                         //   rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
@@ -851,7 +861,7 @@ function Donor_frmedit() {
                       {/* <Form.Item> */}
                       <Input
                         label="ไปรษณีย์"
-                        name="postcode"
+                        name="postcode_new"
                         rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
@@ -865,7 +875,7 @@ function Donor_frmedit() {
                       />
                       {/* </Form.Item> */}
                       <Form.Item
-                        className="sss"
+                        name="address_more"
                         label="เพิ่มเติม"
                         // name=""
                         //   rules={[{ required: true }]}
@@ -914,6 +924,7 @@ function Donor_frmedit() {
                             </Button>
                             <Button
                               type="primary"
+                              htmlType="submit"
                               shape="round"
                               icon={<PlusCircleTwoTone />}
                             >
@@ -926,38 +937,30 @@ function Donor_frmedit() {
                   </Space>
                 </Card>
               </div>
-              <div className="frmedit">
-                <Card title="ประวัติการบริจาค" bordered={false}>
-                  <Table dataSource={dataSource} columns={columns} />
-                </Card>
-              </div>
-              <Row justify="end">
-                <div className="frmedit">
-                  <Space>
-                    <Text underline>หมายเหตุ</Text>
-                    <Text type="danger">
-                      ผลตรวจคือ Salne, Papian, Coombs, Anti-A, Anti-B และ HBsAg,
-                      TPHA, HIV,HBA-NAT, ALT, HCV, HIVAg ตามลำดับ
-                    </Text>
-                    <Button
-                      type="danger"
-                      shape="round"
-                      icon={<PrinterOutlined />}
-                    >
-                      พิมพ์ใบสมัคร
-                    </Button>
-                    <Button
-                      type="primary"
-                      shape="round"
-                      icon={<ProfileOutlined />}
-                    >
-                      พิมพ์บัตร
-                    </Button>
-                  </Space>
-                </div>
-              </Row>
             </Space>
           </Form>
+          <div className="frmedit">
+            <Card title="ประวัติการบริจาค" bordered={false}>
+              <Table dataSource={dataSource} columns={columns} />
+            </Card>
+          </div>
+          <Row justify="end">
+            <div>
+              <Space>
+                <Text underline>หมายเหตุ</Text>
+                <Text type="danger">
+                  ผลตรวจคือ Salne, Papian, Coombs, Anti-A, Anti-B และ HBsAg,
+                  TPHA, HIV,HBA-NAT, ALT, HCV, HIVAg ตามลำดับ
+                </Text>
+                <Button type="danger" shape="round" icon={<PrinterOutlined />}>
+                  พิมพ์ใบสมัคร
+                </Button>
+                <Button type="primary" shape="round" icon={<ProfileOutlined />}>
+                  พิมพ์บัตร
+                </Button>
+              </Space>
+            </div>
+          </Row>
         </Content>
         <Footer></Footer>
       </Layout>

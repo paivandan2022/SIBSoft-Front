@@ -465,7 +465,7 @@ const import_blood = ({ computerName }) => {
 
   return (
     <>
-      <Layout keyTab="import_blood">
+      <Layout keyTab="stock_import_blood">
         <Row>
           <Col span={18}>
             <Title level={2}>Import Blood</Title>
@@ -721,7 +721,9 @@ const import_blood = ({ computerName }) => {
         title="กรอก Password "
         visible={isModalVisiblePassword}
         onOk={handleOkView}
-        onCancel={() => setIsModalVisiblePassword(false)}
+        onCancel={() => {
+          setIsModalVisiblePassword(false), setPassword();
+        }}
         okButtonProps={{
           disabled: !password,
         }}

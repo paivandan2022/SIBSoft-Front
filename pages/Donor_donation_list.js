@@ -119,7 +119,7 @@ function Donor_donation_list() {
       key: "image",
       render: (text, record) => (
         <Avatar
-          src={`http://localhost:3306/image/${text}?date=${moment().format(
+          src={`http://localhost:3306/image/${text}?pathType=2&date=${moment().format(
             "HHmmss"
           )}`}
           width="30px"
