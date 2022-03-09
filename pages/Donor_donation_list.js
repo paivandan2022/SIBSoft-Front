@@ -8,6 +8,7 @@ import {
   Avatar,
   Button,
   Col,
+  DatePicker,
   Modal,
   PageHeader,
   Row,
@@ -16,12 +17,15 @@ import {
   Table,
   Tag,
   Tooltip,
+  Typography,
 } from "antd";
 import moment from "moment";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Layout } from "../components";
 import api from "../lib/api";
+const { Text } = Typography;
+const { RangePicker } = DatePicker;
 
 const { Option } = Select;
 
@@ -227,19 +231,40 @@ function Donor_donation_list() {
               className="site-page-header"
               //   onBack={() => null}
               title="รายการผู้มาบริจาคเลือด"
-              subTitle="..."
+              subTitle="สำหรับเจ้าหน้าที่"
             />
           </Col>
         </Row>
+        <Row></Row>
         <Row justify="end">
           <Col>
             <br />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={{ span: 5, offset: 1 }} lg={{ span: 8, offset: 2 }}>
+            <label>
+              <Text strong>ค้นหาตามวันที่ : &nbsp;</Text>
+            </label>
+            <input type="date"></input>
+            <label>
+              <Text strong>&nbsp;ถึง &nbsp;</Text>
+            </label>
+            <input type="date"></input>
+          </Col>
+          <Col xs={{ span: 11, offset: 1 }} lg={{ span: 6, offset: 2 }}>
+            <label>
+              <Text strong>ค้นหาตามเลขประจำตัว : &nbsp;</Text>
+            </label>
+            <input></input>
+          </Col>
+          <Col xs={{ span: 5, offset: 1 }} lg={{ span: 4, offset: 2 }}>
             <Link href="/Donor_register">
               <Button type="primary">ลงทะเบียนผู้มาบริจาค</Button>
             </Link>
           </Col>
         </Row>
-        <Button type="primary"></Button>
+        <br />
         <Table columns={columns} dataSource={newDonorlist} />
       </Layout>
     </>
