@@ -22,7 +22,6 @@ import {
   Space,
   Table,
   Tag,
-  Tooltip,
   Typography,
 } from "antd";
 import moment from "moment";
@@ -62,6 +61,13 @@ function Donor_frmedit() {
       console.log("formData", formData);
       frmOpen.setFieldsValue({
         addrpart_new: formData.addrpart,
+        soipart_new: formData.soipart,
+        moopart_new: formData.moopart,
+        roadpart_new: formData.roadpart,
+        chwpart_new: formData.chwpart,
+        amppart_new: formData.amppart,
+        tmbpart_new: formData.tmbpart,
+        postcode_new: formData.postcode,
       });
     }
   };
@@ -307,7 +313,7 @@ function Donor_frmedit() {
                           </Form.Item>
                         </div>
                       </Col>
-                      <Col className="gutter-row" span={1}>
+                      {/* <Col className="gutter-row" span={1}>
                         <div>
                           <Tooltip title="search">
                             <Button
@@ -323,13 +329,13 @@ function Donor_frmedit() {
                             />
                           </Tooltip>
                         </div>
-                      </Col>
+                      </Col> */}
                       <Col className="gutter-row" span={8}>
                         <div>
                           <Form.Item
                             label="เลขประจำตัวประชาชน"
-                            // name=""
-                            icon={<SearchOutlined />}
+                            name="cid"
+                            // icon={<SearchOutlined />}
 
                             // rules={[
                             //   {
@@ -342,7 +348,7 @@ function Donor_frmedit() {
                           </Form.Item>
                         </div>
                       </Col>
-                      <Col className="gutter-row" span={1}>
+                      {/* <Col className="gutter-row" span={1}>
                         <div>
                           <Tooltip title="search">
                             <Button
@@ -358,7 +364,7 @@ function Donor_frmedit() {
                             />
                           </Tooltip>
                         </div>
-                      </Col>
+                      </Col> */}
                       <Col className="gutter-row" span={6}>
                         <div>
                           <Image

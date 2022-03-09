@@ -13,7 +13,6 @@ import {
   Input,
   Modal,
   PageHeader,
-  Radio,
   Row,
   Select,
   Space,
@@ -25,6 +24,7 @@ import {
 import th_TH from "antd/lib/date-picker/locale/th_TH";
 import moment from "moment";
 import "moment/locale/th";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Layout } from "../components";
 import api from "../lib/api";
@@ -246,46 +246,45 @@ const Donor_donation_list = () => {
           </Col>
         </Row>
         <Row>
-          <Form
-            form={frmSearch}
-            layout="inline"
-            onFinish={""}
-            initialValues={{
-              date_Search: [moment(), moment()],
-            }}
-          >
-            <Form.Item name="date_type">
-              <Radio.Group>
-                <Radio value="date_collect">วันที่เจาะ</Radio>
-                <Radio value="date_receive">วันที่รับ</Radio>
-                <Radio value="date_expired">วันหมดอายุ</Radio>
-              </Radio.Group>
-            </Form.Item>
-            <Form.Item name="date_Search">
-              <RangePicker
-                placeholder={["วันเริ่ม", "วันสุดท้าย"]}
-                format="DD-MM-YYYY"
-                locale={th_TH}
-              />
-            </Form.Item>
-            <Form.Item name="unit_no">
-              <Input placeholder="Unit No" />
-            </Form.Item>
-            <Form.Item name="antibody">
-              <Input placeholder="Antibody / Antigen" />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Search
+          <Col span={21}>
+            <Form
+              form={frmSearch}
+              layout="inline"
+              onFinish={""}
+              initialValues={{
+                date_Search: [moment(), moment()],
+              }}
+            >
+              <Form.Item name="date_Search" label="ค้นหาจากวันที่">
+                <RangePicker
+                  placeholder={["วันเริ่ม", "วันสุดท้าย"]}
+                  format="DD-MM-YYYY"
+                  locale={th_TH}
+                />
+              </Form.Item>
+              <Form.Item
+                name="cid_Search"
+                label="ค้นหาจากชื่อ-สกุล / เลขประจำตัวประชาชน"
+              >
+                <Input placeholder="เลขประจำตัวประชาชน" />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">
+                  Search
+                </Button>
+              </Form.Item>
+            </Form>
+          </Col>
+          <Col span={3}>
+            <Link href="/Donor_register">
+              <Button
+                type="primary"
+                style={{ background: "#08979c", borderColor: "#e6fffb" }}
+              >
+                ลงทะเบียนผู้มาบริจาค
               </Button>
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" danger>
-                {/* onClick={ClearSearch} */}
-                Clear
-              </Button>
-            </Form.Item>
-          </Form>
+            </Link>
+          </Col>
         </Row>
         <br />
         <Table columns={columns} dataSource={newDonorlist} />
