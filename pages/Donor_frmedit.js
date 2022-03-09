@@ -44,6 +44,10 @@ function Donor_frmedit() {
   const [newAmpure, setAmpure] = useState([]);
   const [newTumbon, setTumbon] = useState([]);
   const [newZip, setZip] = useState([]);
+  const [newProvince_new, setProvince_new] = useState([]);
+  const [newAmpure_new, setAmpure_new] = useState([]);
+  const [newTumbon_new, setTumbon_new] = useState([]);
+  const [newZip_new, setZip_new] = useState([]);
   const [frmAdd] = Form.useForm();
   const [frmOpen] = Form.useForm();
   const [newBloodgroup, setBloodgroup] = useState([]);
@@ -99,12 +103,16 @@ function Donor_frmedit() {
     setZip({
       zipcode: result.data[0].postcode,
     });
+    setZip_new({
+      zipcode: result.data[0].postcode,
+    });
   };
 
   useEffect(async () => {
     if (router?.query?.id) {
       await fetch_pname();
       await Fetch_Province();
+      await Fetch_Province_new();
       await Fetch_Sex();
       await Fetch_mary();
       await Fetch_occu();
@@ -182,6 +190,54 @@ function Donor_frmedit() {
 
     console.log("ไปรษณีย์", result.data);
   };
+
+  // new addrees
+  const Fetch_Province_new = async () => {
+    const result = await api.get("/Get_Province_new");
+    setProvince_new(result.data);
+  };
+
+  const Fetch_Aumpure_new = async (value) => {
+    console.log("cccc", value);
+    const result = await api.get("/Get_Aumpure_new", {
+      params: {
+        PROVINCE_ID: value,
+      },
+    });
+    setAmpure_new(result.data);
+
+    frmAdd.setFieldsValue({
+      amppart: "",
+      tmbpart: "",
+    });
+    setZip_new("");
+    console.log("อำเภอ", result.data);
+  };
+
+  const Fetch_Tumbon_new = async (value) => {
+    console.log("logggg", value);
+    const result = await api.get("/Get_Tumbon_new", {
+      params: {
+        AMPHUR_ID: value,
+      },
+    });
+
+    setTumbon_new(result.data);
+    console.log("ตำบล", result.data);
+  };
+
+  const Fetch_Zip_new = async (value) => {
+    const result = await api.get("/Get_Zip_new", {
+      params: {
+        DISTRICT_CODE: value,
+      },
+    });
+    setZip_new(result.data[0]);
+
+    console.log("ไปรษณีย์", result.data);
+  };
+
+  // new addrees
   const dataSource = [
     {
       key: "1",
@@ -808,8 +864,8 @@ function Donor_frmedit() {
                           margin: "0 8px",
                         }}
                       >
-                        <Select onChange={Fetch_Aumpure}>
-                          {newProvince.map((item) => (
+                        <Select onChange={Fetch_Aumpure_new}>
+                          {newProvince_new.map((item) => (
                             <Option
                               key={item.PROVINCE_ID}
                               value={item.PROVINCE_ID}
@@ -829,8 +885,8 @@ function Donor_frmedit() {
                           margin: "0 8px",
                         }}
                       >
-                        <Select onChange={Fetch_Tumbon}>
-                          {newAmpure?.map((item) => (
+                        <Select onChange={Fetch_Tumbon_new}>
+                          {newAmpure_new?.map((item) => (
                             <Option key={item.AMPHUR_ID} value={item.AMPHUR_ID}>
                               {item.AMPHUR_NAME}
                             </Option>
@@ -848,8 +904,8 @@ function Donor_frmedit() {
                           margin: "0 8px",
                         }}
                       >
-                        <Select onChange={Fetch_Zip}>
-                          {newTumbon.map((item) => (
+                        <Select onChange={Fetch_Zip_new}>
+                          {newTumbon_new.map((item) => (
                             <Option
                               key={item.DISTRICT_CODE}
                               value={item.DISTRICT_CODE}
@@ -872,7 +928,7 @@ function Donor_frmedit() {
                           textAlign: "center",
                         }}
                         placeholder="ไปรษณีย์"
-                        value={newZip?.zipcode}
+                        value={newZip_new?.zipcode}
                       />
                       {/* </Form.Item> */}
                       <Form.Item

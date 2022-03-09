@@ -266,7 +266,7 @@ const Donor_donation_list = () => {
                 name="cid_Search"
                 label="ค้นหาจากชื่อ-สกุล / เลขประจำตัวประชาชน"
               >
-                <Input placeholder="เลขประจำตัวประชาชน" />
+                <Input placeholder="ชื่อ-สกุล / เลขประจำตัวประชาชน" />
               </Form.Item>
               <Form.Item>
                 <Button type="primary" htmlType="submit">
