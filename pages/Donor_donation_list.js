@@ -9,6 +9,7 @@ import {
   Button,
   Col,
   DatePicker,
+  Input,
   Modal,
   PageHeader,
   Row,
@@ -242,23 +243,19 @@ function Donor_donation_list() {
           </Col>
         </Row>
         <Row>
-          <Col xs={{ span: 5, offset: 1 }} lg={{ span: 8, offset: 2 }}>
+          <Col xs={{ span: 5, offset: 1 }} lg={{ span: 7, offset: 1 }}>
             <label>
               <Text strong>ค้นหาตามวันที่ : &nbsp;</Text>
             </label>
-            <input type="date"></input>
-            <label>
-              <Text strong>&nbsp;ถึง &nbsp;</Text>
-            </label>
-            <input type="date"></input>
+            <RangePicker />
           </Col>
-          <Col xs={{ span: 11, offset: 1 }} lg={{ span: 6, offset: 2 }}>
+          <Col xs={{ span: 11, offset: 1 }} lg={{ span: 7, offset: 1 }}>
             <label>
               <Text strong>ค้นหาตามเลขประจำตัว : &nbsp;</Text>
             </label>
-            <input></input>
+            <Input placeholder="เลขประจำตัวประชาชน" />
           </Col>
-          <Col xs={{ span: 5, offset: 1 }} lg={{ span: 4, offset: 2 }}>
+          <Col xs={{ span: 5, offset: 1 }} lg={{ span: 1, offset: 2 }}>
             <Link href="/Donor_register">
               <Button type="primary">ลงทะเบียนผู้มาบริจาค</Button>
             </Link>
