@@ -58,7 +58,7 @@ function Donor_frmedit() {
   const [strAge, setstrAge] = useState();
   const [newStrBirthday, setStrBirthday] = useState();
 
-  const onChange = (e) => {
+  const onCheckaddress = async (e) => {
     console.log(`checked = ${e.target.checked}`);
     if (e.target.checked) {
       const formData = frmOpen.getFieldsValue();
@@ -73,6 +73,9 @@ function Donor_frmedit() {
         tmbpart_new: formData.tmbpart,
         postcode_new: formData.postcode,
       });
+      await Fetch_Aumpure_new(formData.chwpart);
+      await Fetch_Tumbon_new(formData.amppart);
+      await Fetch_Zip_new(formData.tmbpart);
     }
   };
 
@@ -101,9 +104,6 @@ function Donor_frmedit() {
       marrystatus: Number(result.data[0].marrystatus),
     });
     setZip({
-      zipcode: result.data[0].postcode,
-    });
-    setZip_new({
       zipcode: result.data[0].postcode,
     });
   };
@@ -337,7 +337,6 @@ function Donor_frmedit() {
         }
       `}</style>
       <Layout>
-        <Header></Header>
         <Content>
           <Form form={frmOpen}>
             <Space direction="vertical" style={{ width: "100%" }}>
@@ -802,7 +801,7 @@ function Donor_frmedit() {
                       {/* </Form.Item> */}
                     </Card>
                     <Card title="ที่อยู่ปัจจุบัน" bordered={false}>
-                      <Checkbox onChange={onChange}>
+                      <Checkbox onChange={onCheckaddress}>
                         <Text underline>ใช้ที่อยู่ตามบัตรประชาชน</Text>
                       </Checkbox>
                       <br />
@@ -943,11 +942,7 @@ function Donor_frmedit() {
                           margin: "0 8px",
                         }}
                       >
-                        <TextArea
-                          showCount
-                          maxLength={100}
-                          onChange={onChange}
-                        />
+                        <TextArea showCount maxLength={100} />
                       </Form.Item>
                     </Card>
                     <br />

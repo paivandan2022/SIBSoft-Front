@@ -216,8 +216,10 @@ const Donor_donation_list = () => {
     },
   ];
 
-  const Fetch_Donor_list = async () => {
-    const result = await api.get("/Get_donor_list");
+  const Fetch_Donor_list = async (params) => {
+    const result = await api.get("/Get_donor_list", {
+      params: params,
+    });
     console.log("รายชื่อผู้บริจาค", result.data);
     setnewDonorlist(result.data);
   };
@@ -287,7 +289,7 @@ const Donor_donation_list = () => {
           </Col>
         </Row>
         <br />
-        <Table columns={columns} dataSource={newDonorlist} />
+        <Table columns={columns} dataSource={newDonorlist} loading />
       </Layout>
     </>
   );
