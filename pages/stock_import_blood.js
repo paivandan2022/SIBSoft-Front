@@ -633,7 +633,7 @@ const import_blood = ({ computerName }) => {
                 >
                   <Input
                     className="ant-input-lg"
-                    style={{ width: "75%" }}
+                    style={{ width: "75%", textAlign: "center" }}
                     size="large"
                     placeholder="เลขที่ถุงเลือด"
                   />
