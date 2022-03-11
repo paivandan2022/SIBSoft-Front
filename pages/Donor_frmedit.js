@@ -329,50 +329,50 @@ function Donor_frmedit() {
         <Content>
           <Form form={frmOpen}>
             <Space direction="vertical" style={{ width: "100%" }}>
-              <Row justify="center" layout="horizontal">
-                <Card style={{ width: "100%", textAlign: "center" }}>
-                  <div textAlign="center">
+              <Row gutter={23} justify="center">
+                <Col span={5} style={{ textAlign: "center" }}>
+                  <Card title="รูปภาพ" bordered={false}>
                     <Image
-                      width="20%"
+                      width="100%"
                       src={`http://localhost:3306/image/${
                         newDonorlist?.image
                       }?pathType=2&date=${moment().format("HHmmss")}`}
                     />
-                  </div>
-
-                  <br />
-                  <Row justify="center">
-                    <Col span={4}>
-                      <h1>รหัสผู้บริจาค</h1>
-                    </Col>
-                    <Col>
-                      <Form.Item name="">
-                        <Input
-                          style={{ width: "100%", height: "60%" }}
-                          size="large"
-                        />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                  <Row justify="center">
-                    <Col span={4}>
-                      <h1>เลขประจำตัวประชาชน</h1>
-                    </Col>
-                    <Col>
-                      <Form.Item name="cid">
-                        <Input
-                          style={{ width: "100%", height: "60%" }}
-                          size="large"
-                          disabled
-                        />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                </Card>
+                  </Card>
+                </Col>
+                <Col span={18}>
+                  <Card
+                    title="เลขประจำตัว"
+                    bordered={false}
+                    style={{ height: "100%" }}
+                  >
+                    <Form.Item
+                      name=""
+                      label="เลขประจำตัวผู้บริจาค"
+                      style={{
+                        display: "inline-block",
+                        width: "calc(41% - 8px)",
+                        margin: "0 20px",
+                      }}
+                    >
+                      <Input />
+                    </Form.Item>
+                    <Form.Item
+                      name="cid"
+                      label="เลขประจำตัวประชาชน"
+                      rules={[{ required: false }]}
+                      style={{
+                        display: "inline-block",
+                        width: "calc(41% - 8px)",
+                        margin: "0 60px",
+                      }}
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Card>
+                </Col>
               </Row>
-            </Space>
 
-            <Space direction="vertical" style={{ width: "100%" }}>
               <div className="frmedit">
                 <Card title="ลงทะเบียนผู้บริจาคเลือด" bordered={false}>
                   <Space direction="vertical" style={{ width: "100%" }}>
