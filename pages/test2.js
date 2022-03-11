@@ -95,6 +95,8 @@ const Bloodpopup = (value) => {
 };
 const Donor_donation_list = () => {
   const [newDonorlist, setnewDonorlist] = useState([]);
+  const [editDonorlist, setEditDonorlist] = useState([]);
+
   const [frmSearch] = Form.useForm();
 
   //-----------------------------------//
@@ -116,6 +118,26 @@ const Donor_donation_list = () => {
   };
   //-----------------------------------//
 
+  const Fetch_Donor_list = async (params) => {
+    const result = await api.get("/Get_donor_list", { params });
+    console.log("รายชื่อผู้บริจาค", result.data);
+    setnewDonorlist(result.data);
+  };
+
+  const Fetch_Donor_list_open = async (params) => {
+    const result = await api.get("/Get_donor_list_open", { params });
+    console.log("รายชื่อผู้บริจาค", result.data);
+    setEditDonorlist(result.data);
+  };
+  useEffect(async () => {
+    await Fetch_Donor_list_open();
+    await Fetch_Donor_list({
+      date_start: moment().format("YYYY-MM-DD"),
+      date_end: moment().format("YYYY-MM-DD"),
+    });
+  }, []);
+
+  //-------------------------//
   const columns = [
     {
       title: "รูปภาพ",
@@ -192,12 +214,8 @@ const Donor_donation_list = () => {
               style={{ fontSize: "5px", color: "brue" }}
               shape="circle"
               icon={<EditOutlined />}
-              // onClick={Bloodpopup}
               onClick={() => Bloodpopup(record.cid)}
-              // onclick={window.open("", "", "width=800,height=600")}
             />
-
-            {/* <EditOutlined style={{ fontSize: "20px", color: "green" }} shape="circle"/> */}
           </Tooltip>
           <Tooltip title="ลบ">
             <Button
@@ -212,19 +230,7 @@ const Donor_donation_list = () => {
       dataIndex: "",
     },
   ];
-
-  const Fetch_Donor_list = async (params) => {
-    const result = await api.get("/Get_donor_list", { params });
-    console.log("รายชื่อผู้บริจาค", result.data);
-    setnewDonorlist(result.data);
-  };
-
-  useEffect(async () => {
-    await Fetch_Donor_list({
-      date_start: moment().format("YYYY-MM-DD"),
-      date_end: moment().format("YYYY-MM-DD"),
-    });
-  }, []);
+  //------------------//
 
   return (
     <>
@@ -246,36 +252,51 @@ const Donor_donation_list = () => {
           </Col>
         </Row>
         <Row>
-          <Form
-            form={frmSearch}
-            layout="inline"
-            onFinish={onFinishSearch}
-            initialValues={{
-              date_Search: [moment(), moment()],
-            }}
-          >
-            <Form.Item name="date_Search" label="ค้นหาจากวันที่">
-              <RangePicker
-                placeholder={["วันเริ่ม", "วันสุดท้าย"]}
-                format="DD-MM-YYYY"
-                locale={th_TH}
-              />
-            </Form.Item>
-            <Form.Item
-              name="keyword"
-              label="ค้นหาจากชื่อ-สกุล / เลขประจำตัวประชาชน"
+          <Col span={21}>
+            <Form
+              form={frmSearch}
+              layout="inline"
+              onFinish={onFinishSearch}
+              initialValues={{
+                date_Search: [moment(), moment()],
+              }}
             >
-              <Input placeholder="ชื่อ-สกุล / เลขประจำตัวประชาชน" />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Search
-              </Button>
-            </Form.Item>
-          </Form>
+              <Form.Item name="date_Search" label="ค้นหาจากวันที่">
+                <RangePicker
+                  placeholder={["วันเริ่ม", "วันสุดท้าย"]}
+                  format="DD-MM-YYYY"
+                  locale={th_TH}
+                />
+              </Form.Item>
+              <Form.Item
+                name="keyword"
+                label="ค้นหาจากชื่อ-สกุล / เลขประจำตัวประชาชน"
+              >
+                <Input placeholder="ชื่อ-สกุล / เลขประจำตัวประชาชน" />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">
+                  Search
+                </Button>
+              </Form.Item>
+            </Form>
+          </Col>
+          <Col span={3}>
+            <Button
+              type="primary"
+              style={{ background: "#08979c", borderColor: "#e6fffb" }}
+              href="/Donor_register"
+            >
+              ลงทะเบียนผู้มาบริจาค
+            </Button>
+          </Col>
         </Row>
         <br />
-        <Table columns={columns} dataSource={newDonorlist} />
+        <Row>
+          <Col span={24}>
+            <Table columns={columns} dataSource={newDonorlist} />
+          </Col>
+        </Row>
       </Layout>
     </>
   );
