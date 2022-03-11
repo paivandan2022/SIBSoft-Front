@@ -4,7 +4,6 @@ import {
   PrinterOutlined,
   ProfileOutlined,
   RetweetOutlined,
-  SearchOutlined,
   UserDeleteOutlined,
 } from "@ant-design/icons";
 import {
@@ -330,7 +329,7 @@ function Donor_frmedit() {
         <Content>
           <Form form={frmOpen}>
             <Space direction="vertical" style={{ width: "100%" }}>
-              <Row justify="center">
+              <Row justify="center" layout="horizontal">
                 <Card style={{ width: "100%", textAlign: "center" }}>
                   <div textAlign="center">
                     <Image
@@ -342,17 +341,33 @@ function Donor_frmedit() {
                   </div>
 
                   <br />
-                  <Form.Item
-                    label="รหัสผู้บริจาค"
-                    // name=""
-                    icon={<SearchOutlined />}
-                  >
-                    <Input />
-                  </Form.Item>
-                  <br />
-                  <Form.Item label="เลขประจำตัวประชาชน" name="cid">
-                    <Input />
-                  </Form.Item>
+                  <Row justify="center">
+                    <Col span={4}>
+                      <h1>รหัสผู้บริจาค</h1>
+                    </Col>
+                    <Col>
+                      <Form.Item name="">
+                        <Input
+                          style={{ width: "100%", height: "60%" }}
+                          size="large"
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  <Row justify="center">
+                    <Col span={4}>
+                      <h1>เลขประจำตัวประชาชน</h1>
+                    </Col>
+                    <Col>
+                      <Form.Item name="cid">
+                        <Input
+                          style={{ width: "100%", height: "60%" }}
+                          size="large"
+                          disabled
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
                 </Card>
               </Row>
             </Space>
