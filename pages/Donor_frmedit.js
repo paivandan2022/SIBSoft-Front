@@ -50,6 +50,7 @@ function Donor_frmedit() {
   const [newZip_new, setZip_new] = useState([]);
   const [frmAdd] = Form.useForm();
   const [frmOpen] = Form.useForm();
+  const [frmOpenAdd2] = Form.useForm();
   const [newBloodgroup, setBloodgroup] = useState([]);
   const [newPname, setNewPname] = useState([]);
   const [newSex, setSex] = useState([]);
@@ -61,19 +62,29 @@ function Donor_frmedit() {
   const onChange = (e) => {
     console.log(`checked = ${e.target.checked}`);
     if (e.target.checked) {
-      const formData = frmOpen.getFieldsValue();
-      console.log("formData", formData);
+      // const formData = frmOpenAdd2.getFieldsValue();
+      // console.log("formData", formData);
+      console.log("add2", newDonorlist);
       frmOpenAdd2.setFieldsValue({
         addrpart_new: newDonorlist?.addrpart,
-        soipart_new: formData.soipart,
-        moopart_new: formData.moopart,
-        roadpart_new: formData.roadpart,
-        chwpart_new: formData.chwpart,
-        amppart_new: formData.amppart,
-        tmbpart_new: formData.tmbpart,
-        postcode_new: formData.postcode,
+        soipart_new: newDonorlist?.soipart,
+        moopart_new: newDonorlist?.moopart,
+        roadpart_new: newDonorlist?.roadpart,
+        chwpart_new: Number(newDonorlist?.chwpart),
+        amppart_new: Number(newDonorlist?.amppart),
+        tmbpart_new: newDonorlist?.tmbpart,
+        // soipart_new: formData.soipart,
+        // moopart_new: formData.moopart,
+        // roadpart_new: formData.roadpart,
+        // chwpart_new: formData.chwpart,
+        // amppart_new: formData.amppart,
+        // tmbpart_new: formData.tmbpart,
+        // postcode_new: formData.postcode,
       });
       console.log("sssffs", addrpart_new);
+      setZip_new({
+        zipcode: result.data[0].postcode,
+      });
     }
   };
 
@@ -88,6 +99,8 @@ function Donor_frmedit() {
     setnewDonorlist(result.data[0]);
     Fetch_Aumpure(result.data[0].chwpart);
     Fetch_Tumbon(result.data[0].amppart);
+    Fetch_Aumpure_new(result.data[0].chwpart);
+    Fetch_Tumbon_new(result.data[0].amppart);
     Fetch_Zip(result.data[0].tmbpart);
     console.log("dddddfdf", result.data);
 
@@ -104,9 +117,6 @@ function Donor_frmedit() {
       marrystatus: Number(result.data[0].marrystatus),
     });
     setZip({
-      zipcode: result.data[0].postcode,
-    });
-    setZip_new({
       zipcode: result.data[0].postcode,
     });
   };
