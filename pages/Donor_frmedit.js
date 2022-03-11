@@ -327,52 +327,55 @@ function Donor_frmedit() {
       </style>
       <Layout>
         <Content>
-          <Form form={frmOpen}>
+          <Form form={frmOpen} Layout="vertical">
             <Space direction="vertical" style={{ width: "100%" }}>
-              <Row gutter={23} justify="center">
-                <Col span={5} style={{ textAlign: "center" }}>
-                  <Card title="รูปภาพ" bordered={false}>
-                    <Image
-                      width="100%"
-                      src={`http://localhost:3306/image/${
-                        newDonorlist?.image
-                      }?pathType=2&date=${moment().format("HHmmss")}`}
-                    />
-                  </Card>
-                </Col>
-                <Col span={18}>
-                  <Card
-                    title="เลขประจำตัว"
-                    bordered={false}
-                    style={{ height: "100%" }}
-                  >
-                    <Form.Item
-                      name=""
-                      label="เลขประจำตัวผู้บริจาค"
-                      style={{
-                        display: "inline-block",
-                        width: "calc(41% - 8px)",
-                        margin: "0 20px",
-                      }}
+              <div className="frmedit">
+                <Row gutter={24} justify="center">
+                  <Col span={5} style={{ textAlign: "center" }}>
+                    <Card title="รูปภาพ" bordered={false}>
+                      <Image
+                        width="100%"
+                        src={`http://localhost:3306/image/${
+                          newDonorlist?.image
+                        }?pathType=2&date=${moment().format("HHmmss")}`}
+                      />
+                    </Card>
+                  </Col>
+                  <Col span={19}>
+                    <Card
+                      title="เลขประจำตัว"
+                      bordered
+                      style={{ height: "100%" }}
                     >
-                      <Input />
-                    </Form.Item>
-                    <Form.Item
-                      name="cid"
-                      label="เลขประจำตัวประชาชน"
-                      rules={[{ required: false }]}
-                      style={{
-                        display: "inline-block",
-                        width: "calc(41% - 8px)",
-                        margin: "0 60px",
-                      }}
-                    >
-                      <Input />
-                    </Form.Item>
-                  </Card>
-                </Col>
-              </Row>
-
+                      <div>
+                        <Form.Item
+                          name=""
+                          label="เลขประจำตัวผู้บริจาค"
+                          style={{
+                            display: "inline-block",
+                            width: "calc(41% - 8px)",
+                          }}
+                        >
+                          <Input />
+                        </Form.Item>
+                      </div>
+                      <div>
+                        <Form.Item
+                          name="cid"
+                          label="เลขประจำตัวประชาชน"
+                          rules={[{ required: false }]}
+                          style={{
+                            display: "inline-block",
+                            width: "calc(41% - 8px)",
+                          }}
+                        >
+                          <Input />
+                        </Form.Item>
+                      </div>
+                    </Card>
+                  </Col>
+                </Row>
+              </div>
               <div className="frmedit">
                 <Card title="ลงทะเบียนผู้บริจาคเลือด" bordered={false}>
                   <Space direction="vertical" style={{ width: "100%" }}>
@@ -384,14 +387,12 @@ function Donor_frmedit() {
                         label=""
                         name="bloodgroup"
                         rules={[{ required: false }]}
-                        style={{
-                          display: "inline-block",
-                          width: "calc(35% - 8px)",
-                          margin: "0 20px",
-                          textAlign: "center",
-                        }}
                       >
-                        <Select placeholder="กรุ๊ปเลือด">
+                        <Select
+                          placeholder="กรุ๊ปเลือด"
+                          size="large"
+                          style={{ width: "10%" }}
+                        >
                           {newBloodgroup.map((item) => (
                             <Option key={item.blood_id} value={item.blood_name}>
                               {item.blood_name}
@@ -411,11 +412,14 @@ function Donor_frmedit() {
                         rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
-                          width: "calc(20% - 8px)",
-                          margin: "0 8px",
+                          margin: "0 15px",
                         }}
                       >
-                        <Select placeholder="เลือกคำนำหน้า">
+                        <Select
+                          placeholder="เลือกคำนำหน้า"
+                          size="large"
+                          style={{ width: "100%" }}
+                        >
                           {newPname.map((item) => (
                             <Option
                               key={item.prefix_id_th}
@@ -432,10 +436,14 @@ function Donor_frmedit() {
                         rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
-                          width: "calc(35% - 8px)",
+                          margin: "0 15px",
                         }}
                       >
-                        <Input placeholder="ชื่อจริง" />
+                        <Input
+                          placeholder="ชื่อจริง"
+                          size="large"
+                          style={{ width: "80%", height: "40px" }}
+                        />
                       </Form.Item>
                       <Form.Item
                         name="lname"
@@ -464,7 +472,11 @@ function Donor_frmedit() {
                           margin: "0 8px",
                         }}
                       >
-                        <Select placeholder="SELECT PREFIX">
+                        <Select
+                          placeholder="SELECT PREFIX"
+                          size="large"
+                          style={{ width: "50%" }}
+                        >
                           {newPname.map((item) => (
                             <Option
                               key={item.prefix_id_en}
@@ -484,7 +496,7 @@ function Donor_frmedit() {
                           width: "calc(35% - 8px)",
                         }}
                       >
-                        <Input placeholder="ชื่อจริง" />
+                        <Input placeholder="ชื่อจริง" size="large" />
                       </Form.Item>
                       <Form.Item
                         name="lname_en"
@@ -496,7 +508,7 @@ function Donor_frmedit() {
                           margin: "0 8px",
                         }}
                       >
-                        <Input placeholder="นามสกุล" />
+                        <Input placeholder="นามสกุล" size="large" />
                       </Form.Item>
                     </Form.Item>
                     <Form.Item
@@ -513,7 +525,11 @@ function Donor_frmedit() {
                           margin: "0 8px",
                         }}
                       >
-                        <Select placeholder="เลือกเพศ">
+                        <Select
+                          placeholder="เลือกเพศ"
+                          size="large"
+                          style={{ width: "50%" }}
+                        >
                           {newSex.map((item) => (
                             <Option key={item.code} value={item.code}>
                               {item.name}
@@ -531,7 +547,11 @@ function Donor_frmedit() {
                           margin: "0 8px",
                         }}
                       >
-                        <Select placeholder="เลือกสถานะ">
+                        <Select
+                          placeholder="เลือกสถานะ"
+                          size="large"
+                          style={{ width: "50%" }}
+                        >
                           {newMary.map((item) => (
                             <Option key={item.status_id} value={item.status_id}>
                               {item.status_name}
@@ -549,7 +569,11 @@ function Donor_frmedit() {
                           margin: "0 8px",
                         }}
                       >
-                        <Select placeholder="เลือกอาชีพ">
+                        <Select
+                          placeholder="เลือกอาชีพ"
+                          size="large"
+                          style={{ width: "70%" }}
+                        >
                           {newOccu.map((item) => (
                             <Option key={item.occu_id} value={item.occu_id}>
                               {item.occu_name}
@@ -567,25 +591,30 @@ function Donor_frmedit() {
                         name="phone"
                         label="เบอร์ติดต่อ"
                         rules={[{ required: false }]}
-                        style={{
-                          display: "inline-block",
-                          width: "calc(45% - 8px)",
-                        }}
+                        // style={{
+                        //   display: "inline-block",
+                        //   width: "calc(45% - 8px)",
+                        // }}
                       >
-                        <Input placeholder="โทรศัพท์" />
+                        <Input
+                          placeholder="โทรศัพท์"
+                          style={{ width: "50%", height: "40px" }}
+                        />
                       </Form.Item>
                       <Form.Item
                         type="email"
                         name="email"
                         label="Email (อีเมลล์)"
                         rules={[{ required: false }]}
-                        style={{
-                          display: "inline-block",
-                          width: "calc(48% - 8px)",
-                          margin: "0 8px",
-                        }}
+                        // style={{
+                        //   display: "inline-block",
+                        //   width: "calc(48% - 0px)",
+                        // }}
                       >
-                        <Input placeholder="Email" />
+                        <Input
+                          placeholder="Email"
+                          style={{ width: "70%", height: "40px" }}
+                        />
                       </Form.Item>
                     </Form.Item>
                     <div
