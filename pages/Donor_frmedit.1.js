@@ -35,8 +35,6 @@ const style = { background: "#0092ff", padding: "8px 0" };
 
 function Donor_frmedit() {
   const [newDonorlist, setnewDonorlist] = useState([]);
-  const [newCID, setnewCID] = useState();
-  const router = useRouter();
   const [newProvince, setProvince] = useState([]);
   const [newAmpure, setAmpure] = useState([]);
   const [newTumbon, setTumbon] = useState([]);
@@ -47,13 +45,13 @@ function Donor_frmedit() {
   const [newZip_new, setZip_new] = useState([]);
   const [newBloodgroup, setBloodgroup] = useState([]);
   const [newPname, setNewPname] = useState([]);
-  const [newSex, setSex] = useState([]);
+  const [newSex, setNewSex] = useState([]);
   const [newOccu, setOccu] = useState([]);
   const [newMary, setMary] = useState([]);
   const [strAge, setstrAge] = useState();
   const [newStrBirthday, setStrBirthday] = useState();
-  const [newHistoryDonor, setHistoryDonor] = useState([]);
-
+  // const [newHistoryDonor, setnewDonorlist] = useState([]);
+  const router = useRouter();
   //------------------------------------//
 
   const [frmOpen] = Form.useForm();
@@ -91,7 +89,6 @@ function Donor_frmedit() {
       });
     }
   };
-
   const Fetch_frmedit = async (value) => {
     console.log("--------------CID ", value);
     const result = await api.get("/Get_donor_list", {
@@ -120,11 +117,10 @@ function Donor_frmedit() {
       zipcode: result.data[0].postcode,
     });
   };
-
   const Fetch_Donor_list_open = async (params) => {
     const result = await api.get("/Get_donor_list_open", { params });
     console.log("ประวัติผู้บริจาค", result.data);
-    setHistoryDonor(result.data);
+    setnewDonorlist(result.data);
   };
 
   useEffect(async () => {
@@ -148,13 +144,13 @@ function Donor_frmedit() {
   };
 
   const Fetch_Sex = async () => {
-    const result = await api.get("/Get_group");
-    setBloodgroup(result.data);
+    const result = await api.get("/Get_sex");
+    setNewSex(result.data);
   };
 
   const Fetch_bloodgroup = async () => {
-    const result = await api.get("/Get_sex");
-    setSex(result.data);
+    const result = await api.get("/Get_group");
+    setBloodgroup(result.data);
   };
 
   const Fetch_occu = async () => {
@@ -233,32 +229,30 @@ function Donor_frmedit() {
     setZip_new(result.data[0]);
   };
   //end new fecth addrees //
-  // new addrees
-  // ข้อมูล make
-  // const dataSource = [
-  //   {
-  //     key: "1",
-  //     no: "1",
-  //     no_bag: 123,
-  //     date_donor: "22 กุมภาพันธ์ 2565",
-  //     bag: "6 Unit",
-  //     bloodgroup: "AB",
-  //     result: <Tag color="green">ปกติ</Tag>,
-  //     status: "รอนำส่ง",
-  //     address: "ออกหน่วย",
-  //   },
-  //   {
-  //     key: "2",
-  //     no: "2",
-  //     no_bag: 789,
-  //     date_donor: "15 มกราคม 2565",
-  //     bag: "6 Unit",
-  //     bloodgroup: "O",
-  //     result: <Tag color="red">ติดเชื้อ</Tag>,
-  //     status: "กำลังดำเนินการ",
-  //     address: "โรงพยาบาล",
-  //   },
-  // ];
+
+  const setDate = (dateValue) => {
+    const a = moment();
+    const b = moment(dateValue, "YYYY-MM-DD");
+    setStrBirthday(b);
+    const age = moment.duration(a.diff(b));
+    const years = age.years();
+    const months = age.months();
+    const day = age.days();
+    const Age = years + " ปี " + months + " เดือน " + day + " วัน";
+    setstrAge(Age);
+  };
+
+  const onFinish_Data = async (value) => {
+    console.log("Add_donor_frmedit", value);
+
+    const result = await api.put(`/Add_donor_frmedit`, {
+      ...value,
+      birthday: moment(newStrBirthday).format("YYYY-MM-DD"),
+      postcode: newZip,
+      postcode_new: newZip_new,
+      image: `${value.cid}.jpg`,
+    });
+  };
 
   const columns = [
     {
@@ -298,18 +292,6 @@ function Donor_frmedit() {
     },
   ];
 
-  const setDate = (dateValue) => {
-    const a = moment();
-    const b = moment(dateValue, "YYYY-MM-DD");
-    setStrBirthday(b);
-    const age = moment.duration(a.diff(b));
-    const years = age.years();
-    const months = age.months();
-    const day = age.days();
-    const Age = years + " ปี " + months + " เดือน " + day + " วัน";
-    setstrAge(Age);
-  };
-
   return (
     <>
       <style jsx>
@@ -326,7 +308,7 @@ function Donor_frmedit() {
       </style>
       <Layout>
         <Content>
-          <Form form={frmOpen} Layout="vertical">
+          <Form form={frmOpen} onFinish={onFinish_Data} Layout="vertical">
             <Space direction="vertical" style={{ width: "100%" }}>
               <div className="frmedit">
                 <Card title="ลงทะเบียนผู้บริจาคเลือด" bordered={false}>
@@ -339,14 +321,14 @@ function Donor_frmedit() {
                               <Image
                                 width="25%"
                                 src={`http://localhost:3306/image/${
-                                  newDonorlist?.image
+                                  newDonorlist[0]?.image
                                 }?pathType=2&date=${moment().format("HHmmss")}`}
                               />
                             </Form.Item>
                             <br />
                           </Row>
                           <Form.Item
-                            name="no"
+                            name=""
                             label="เลขประจำตัวผู้บริจาค"
                             style={{
                               display: "inline-block",
@@ -1126,6 +1108,7 @@ function Donor_frmedit() {
               <Table dataSource={newDonorlist} columns={columns} />
             </Card>
           </div>
+
           <Row justify="end">
             <div>
               <Space>
