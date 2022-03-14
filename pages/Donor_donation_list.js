@@ -1,5 +1,4 @@
 import {
-  CheckOutlined,
   DeleteOutlined,
   EditOutlined,
   SearchOutlined,
@@ -203,7 +202,7 @@ const Donor_donation_list = () => {
         <Space size="middle">
           <Tooltip title="ดูข้อมูลผู้บริจาค">
             <Button
-              style={{ fontSize: "5px", color: "#E9967A" }}
+              style={{ fontSize: "5px", color: "green" }}
               shape="circle"
               icon={<SearchOutlined />}
               // onClick={Editpopup(record.cid)}
@@ -216,14 +215,6 @@ const Donor_donation_list = () => {
               shape="circle"
               icon={<EditOutlined />}
               onClick={() => Bloodpopup(record.cid)}
-            />
-          </Tooltip>
-          <Tooltip title="ยืนยันข้อมูล">
-            <Button
-              style={{ fontSize: "5px", color: "green" }}
-              shape="circle"
-              icon={<CheckOutlined />}
-              onClick={countDown}
             />
           </Tooltip>
           <Tooltip title="ลบ">
