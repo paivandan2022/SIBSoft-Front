@@ -28,10 +28,18 @@ import "moment/locale/th";
 import { useEffect, useState } from "react";
 import { Layout } from "../components";
 import api from "../lib/api";
+import env from "/env.json";
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
-
 const { Option } = Select;
+
+const mapColorStatus = {
+  1: "red",
+  2: "green",
+  3: "#fe6d43",
+  4: "blue",
+  5: "#000",
+};
 
 const countDown = () => {
   let secondsToGo = 9;
@@ -142,7 +150,7 @@ const Donor_donation_list = () => {
       key: "image",
       render: (text, record) => (
         <Avatar
-          src={`http://localhost:3306/image/${text}?pathType=2&date=${moment().format(
+          src={`${env.PATH_IMG}/image/${text}?pathType=2&date=${moment().format(
             "HHmmss"
           )}`}
           width="30px"
@@ -181,15 +189,18 @@ const Donor_donation_list = () => {
     },
     {
       title: "สถานะ",
-      key: "tag",
+      dataIndex: "status_name",
+      key: "status_name",
       render: (text, record) => (
         <Space size="middle">
-          <Tag icon={<SyncOutlined spin />} color="processing">
-            รอการตรวจสอบประวัติ
+          <Tag
+            icon={<SyncOutlined spin />}
+            color={mapColorStatus[record.status]}
+          >
+            {text}
           </Tag>
         </Space>
       ),
-      dataIndex: "tag",
     },
     {
       title: "การทำงาน",

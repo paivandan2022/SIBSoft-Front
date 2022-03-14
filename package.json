@@ -17,6 +17,7 @@
     "crypto": "^1.0.1",
     "dayjs": "^1.10.7",
     "dotenv": "^16.0.0",
+    "dotenv-webpack": "^7.1.0",
     "internal-ip": "^7.0.0",
     "jsbarcode": "^3.11.5",
     "local-ip-address": "^1.0.0",
