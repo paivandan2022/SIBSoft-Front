@@ -51,6 +51,7 @@ function Donor_frmedit() {
   const [newMary, setMary] = useState([]);
   const [strAge, setstrAge] = useState();
   const [newStrBirthday, setStrBirthday] = useState();
+  // const [newHistoryDonor, setHistoryDonor] = useState([]);
 
   //------------------------------------//
 
@@ -118,6 +119,12 @@ function Donor_frmedit() {
     });
   };
 
+  // const Fetch_Donor_list_open = async (params) => {
+  //   const result = await api.get("/Get_donor_list_open", { params });
+  //   console.log("ประวัติผู้บริจาค", result.data);
+  //   setHistoryDonor(result.data);
+  // };
+
   useEffect(async () => {
     if (router?.query?.id) {
       await fetch_pname();
@@ -128,6 +135,7 @@ function Donor_frmedit() {
       await Fetch_occu();
       await Fetch_bloodgroup();
       await Fetch_frmedit(router?.query?.id);
+      //await Fetch_Donor_list_open(Get_donor_list_open);
     }
   }, [router?.query?.id]);
 
@@ -286,6 +294,19 @@ function Donor_frmedit() {
     },
   ];
 
+  const onFinishdata = async (value) => {
+    console.log("Add_donor_frmedit", value);
+
+    const result = await api.post(`/Add_donor_frmedit`, {
+      ...value,
+
+      birthday: moment(newStrBirthday).format("YYYY-MM-DD"),
+      postcode: newZip,
+      postcode_new: newZip_new,
+      image: `${value.cid}.jpg`,
+    });
+  };
+
   return (
     <>
       <style jsx>
@@ -322,7 +343,7 @@ function Donor_frmedit() {
                             <br />
                           </Row>
                           <Form.Item
-                            name="no"
+                            name=""
                             label="เลขประจำตัวผู้บริจาค"
                             style={{
                               display: "inline-block",
@@ -1102,6 +1123,7 @@ function Donor_frmedit() {
               <Table dataSource={newDonorlist} columns={columns} />
             </Card>
           </div>
+
           <Row justify="end">
             <div>
               <Space>

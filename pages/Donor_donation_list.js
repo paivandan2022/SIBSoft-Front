@@ -1,5 +1,4 @@
 import {
-  CheckOutlined,
   DeleteOutlined,
   EditOutlined,
   SearchOutlined,
@@ -8,6 +7,7 @@ import {
 import {
   Avatar,
   Button,
+  Card,
   Col,
   DatePicker,
   Form,
@@ -125,13 +125,8 @@ const Donor_donation_list = () => {
     setnewDonorlist(result.data);
   };
 
-  const Fetch_Donor_list_open = async (params) => {
-    const result = await api.get("/Get_donor_list_open", { params });
-    console.log("รายชื่อผู้บริจาค", result.data);
-    setEditDonorlist(result.data);
-  };
   useEffect(async () => {
-    await Fetch_Donor_list_open();
+    // await Fetch_Donor_list_open();
     await Fetch_Donor_list({
       date_start: moment().format("YYYY-MM-DD"),
       date_end: moment().format("YYYY-MM-DD"),
@@ -203,7 +198,7 @@ const Donor_donation_list = () => {
         <Space size="middle">
           <Tooltip title="ดูข้อมูลผู้บริจาค">
             <Button
-              style={{ fontSize: "5px", color: "#E9967A" }}
+              style={{ fontSize: "5px", color: "green" }}
               shape="circle"
               icon={<SearchOutlined />}
               // onClick={Editpopup(record.cid)}
@@ -222,8 +217,8 @@ const Donor_donation_list = () => {
             <Button
               style={{ fontSize: "5px", color: "green" }}
               shape="circle"
-              icon={<CheckOutlined />}
-              onClick={countDown}
+              icon={<DeleteOutlined />}
+              // onClick={countDown}
             />
           </Tooltip>
           <Tooltip title="ลบ">
@@ -301,11 +296,13 @@ const Donor_donation_list = () => {
           </Col>
         </Row>
         <br />
-        <Row>
-          <Col span={24}>
-            <Table columns={columns} dataSource={newDonorlist} />
-          </Col>
-        </Row>
+        <Card>
+          <Row>
+            <Col span={24}>
+              <Table columns={columns} dataSource={newDonorlist} />
+            </Col>
+          </Row>
+        </Card>
       </Layout>
     </>
   );
