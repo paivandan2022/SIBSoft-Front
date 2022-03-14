@@ -21,25 +21,23 @@ import { Layout } from "../components";
 import api from "../lib/api";
 const { Option } = Select;
 
-const config = {
-  rules: [
-    {
-      type: "object",
-      message: "กรุณาเลือกวันที่",
-    },
-  ],
-};
-const normFile = (e) => {
-  console.log("Upload event:", e);
-
-  if (Array.isArray(e)) {
-    return e;
-  }
-
-  return e && e.fileList;
-};
-
 function Donor_register() {
+  const [newPname, setNewPname] = useState([]);
+  const [newProvince, setProvince] = useState([]);
+  const [newAmpure, setAmpure] = useState([]);
+  const [newTumbon, setTumbon] = useState([]);
+  const [newZip, setZip] = useState([]);
+  const [newSex, setSex] = useState([]);
+  const [newOccu, setOccu] = useState([]);
+  const [newMary, setMary] = useState([]);
+  const [newBloodgroup, setBloodgroup] = useState([]);
+  const [strAge, setstrAge] = useState();
+  const [newStrBirthday, setStrBirthday] = useState();
+  const [newStrzip, setStrzip] = useState();
+  const [loadingUploadPic, setLoadingUploadPic] = useState(false);
+
+  const [frmAdd] = Form.useForm();
+
   function success() {
     Modal.success({
       content: "ลงทะเบียนผู้มาบริจาคเลือดเสร็จสิ้น",
@@ -60,22 +58,6 @@ function Donor_register() {
     //   birthday: moment(),
     //     });
   }, []);
-
-  const [newPname, setNewPname] = useState([]);
-  const [newProvince, setProvince] = useState([]);
-  const [newAmpure, setAmpure] = useState([]);
-  const [newTumbon, setTumbon] = useState([]);
-  const [newZip, setZip] = useState([]);
-  const [newSex, setSex] = useState([]);
-  const [newOccu, setOccu] = useState([]);
-  const [newMary, setMary] = useState([]);
-  const [newBloodgroup, setBloodgroup] = useState([]);
-  const [strAge, setstrAge] = useState();
-  const [newStrBirthday, setStrBirthday] = useState();
-  const [newStrzip, setStrzip] = useState();
-  const [loadingUploadPic, setLoadingUploadPic] = useState(false);
-
-  const [frmAdd] = Form.useForm();
 
   const fetch_pname = async () => {
     const result = await api.get("/pname_en_th");
