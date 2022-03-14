@@ -52,27 +52,6 @@ const countDown = () => {
   }, secondsToGo * 1000);
 };
 
-const tabListNoTitle = [
-  {
-    key: "article",
-    tab: "วันที่บริจาค",
-  },
-  {
-    key: "app",
-    tab: "รายละเอียดการบริจาค",
-  },
-  {
-    key: "project",
-    tab: "เจ้าหน้าที่",
-  },
-];
-
-const contentListNoTitle = {
-  article: <p>sss</p>,
-  app: <p>app content</p>,
-  project: <p>project content</p>,
-};
-
 const Donor_donation_list = () => {
   const [newDonorlist, setnewDonorlist] = useState([]);
   const [frmSearch] = Form.useForm();
@@ -225,8 +204,10 @@ const Donor_donation_list = () => {
     },
   ];
 
-  const Fetch_Donor_list = async () => {
-    const result = await api.get("/Get_donor_list");
+  const Fetch_Donor_list = async (params) => {
+    const result = await api.get("/Get_donor_list", {
+      params: params,
+    });
     console.log("รายชื่อผู้บริจาค", result.data);
     setnewDonorlist(result.data);
   };

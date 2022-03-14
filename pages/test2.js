@@ -13,7 +13,6 @@ import {
   Input,
   Modal,
   PageHeader,
-  Radio,
   Row,
   Select,
   Space,
@@ -51,68 +50,55 @@ const countDown = () => {
   }, secondsToGo * 1000);
 };
 
-const tabListNoTitle = [
-  {
-    key: "article",
-    tab: "วันที่บริจาค",
-  },
-  {
-    key: "app",
-    tab: "รายละเอียดการบริจาค",
-  },
-  {
-    key: "project",
-    tab: "เจ้าหน้าที่",
-  },
-];
+const Editpopup = (value) => {
+  const scW = screen.width / 2;
+  const scH = screen.height / 2;
+  const appW = 1280;
+  const appH = 720;
+  const url = "/Donor_frmedit?id=" + value;
+  const title = "TEST";
+  const callW = appW / 2;
+  const callH = appH / 2;
 
+  const str =
+    "width=" +
+    appW +
+    ",height=" +
+    appH +
+    ",top=" +
+    (scH - callH) +
+    ",left=" +
+    (scW - callW);
+  window.open(url, title, str);
+};
+
+const Bloodpopup = (value) => {
+  const scW = screen.width / 2;
+  const scH = screen.height / 2;
+  const appW = 1280;
+  const appH = 720;
+  const url = "/Donor_frmblood?id=" + value;
+  const title = "TEST";
+  const callW = appW / 2;
+  const callH = appH / 2;
+
+  const str =
+    "width=" +
+    appW +
+    ",height=" +
+    appH +
+    ",top=" +
+    (scH - callH) +
+    ",left=" +
+    (scW - callW);
+  window.open(url, title, str);
+};
 const Donor_donation_list = () => {
   const [newDonorlist, setnewDonorlist] = useState([]);
+  const [editDonorlist, setEditDonorlist] = useState([]);
+
   const [frmSearch] = Form.useForm();
 
-  const Editpopup = (value) => {
-    const scW = screen.width / 2;
-    const scH = screen.height / 2;
-    const appW = 1280;
-    const appH = 720;
-    const url = "/Donor_frmedit?id=" + value;
-    const title = "TEST";
-    const callW = appW / 2;
-    const callH = appH / 2;
-
-    const str =
-      "width=" +
-      appW +
-      ",height=" +
-      appH +
-      ",top=" +
-      (scH - callH) +
-      ",left=" +
-      (scW - callW);
-    window.open(url, title, str);
-  };
-
-  const Bloodpopup = (value) => {
-    const scW = screen.width / 2;
-    const scH = screen.height / 2;
-    const appW = 1280;
-    const appH = 720;
-    const url = "/Donor_frmblood?id=" + value;
-    const title = "TEST";
-    const callW = appW / 2;
-    const callH = appH / 2;
-
-    const str =
-      "width=" +
-      appW +
-      ",height=" +
-      appH +
-      ",top=" +
-      (scH - callH) +
-      ",left=" +
-      (scW - callW);
-    window.open(url, title, str);
-  };
   //-----------------------------------//
   const onFinishSearch = async (value) => {
     console.log("value------>", value);
@@ -123,59 +109,35 @@ const Donor_donation_list = () => {
         date_end: moment(value.date_Search[1]).format("YYYY-MM-DD"),
       };
       delete params.date_Search;
+      console.log("params", params);
 
-      const result1 = await api.get(`/`, { params });
-      setCountAllStatus(result1.data[0]);
-
-      if (!(value?.date_type || value?.unit_no || value?.antibody)) {
-        const result2 = await api.get(`/`, {
-          params,
-        });
-        setCompo_status(result2.data[0]);
-
-        const result3 = await api.get(`/`, {
-          params,
-        });
-        setStock_status_detail(result3.data[0]);
-      } else {
-        setCompo_status(null);
-        setStock_status_detail(null);
-      }
-
-      setIsSearch(true);
+      await Fetch_Donor_list(params);
     } catch (error) {
       Modal.error({ title: "Error" });
     }
   };
   //-----------------------------------//
-  const onClickSearch = async (value) => {
-    //console.log("---- กดปุ่ม 2 --------->", isSearch);
-    setStatusSelect(value.status_id);
-    try {
-      const params = {
-        ...value,
-        date_start: moment(value.date_Search[0]).format("YYYY-MM-DD"),
-        date_end: moment(value.date_Search[1]).format("YYYY-MM-DD"),
-      };
 
-      delete params.date_Search;
-
-      const result2 = await api.get(`/`, {
-        params,
-        // params: { status_id: 1 },
-      });
-      setCompo_status(result2.data[0]);
-
-      // const result3 = await api.get(`/Stock_Detail_unit`, {
-      //   params,
-      // });
-      // setStock_status_detail(result3.data[0]);
-      setStock_status_detail(null);
-    } catch (error) {
-      Modal.error({ title: "Error", error: error.message });
-    }
+  const Fetch_Donor_list = async (params) => {
+    const result = await api.get("/Get_donor_list", { params });
+    console.log("รายชื่อผู้บริจาค", result.data);
+    setnewDonorlist(result.data);
   };
 
+  const Fetch_Donor_list_open = async (params) => {
+    const result = await api.get("/Get_donor_list_open", { params });
+    console.log("รายชื่อผู้บริจาค", result.data);
+    setEditDonorlist(result.data);
+  };
+  useEffect(async () => {
+    await Fetch_Donor_list_open();
+    await Fetch_Donor_list({
+      date_start: moment().format("YYYY-MM-DD"),
+      date_end: moment().format("YYYY-MM-DD"),
+    });
+  }, []);
+
+  //-------------------------//
   const columns = [
     {
       title: "รูปภาพ",
@@ -252,12 +214,8 @@ const Donor_donation_list = () => {
               style={{ fontSize: "5px", color: "brue" }}
               shape="circle"
               icon={<EditOutlined />}
-              // onClick={Bloodpopup}
               onClick={() => Bloodpopup(record.cid)}
-              // onclick={window.open("", "", "width=800,height=600")}
             />
-
-            {/* <EditOutlined style={{ fontSize: "20px", color: "green" }} shape="circle"/> */}
           </Tooltip>
           <Tooltip title="ลบ">
             <Button
@@ -272,16 +230,7 @@ const Donor_donation_list = () => {
       dataIndex: "",
     },
   ];
-
-  const Fetch_Donor_list = async () => {
-    const result = await api.get("/Get_donor_list");
-    console.log("รายชื่อผู้บริจาค", result.data);
-    setnewDonorlist(result.data);
-  };
-
-  useEffect(async () => {
-    await Fetch_Donor_list();
-  }, []);
+  //------------------//
 
   return (
     <>
@@ -303,49 +252,51 @@ const Donor_donation_list = () => {
           </Col>
         </Row>
         <Row>
-          <Form
-            form={frmSearch}
-            layout="inline"
-            onFinish={onFinishSearch}
-            initialValues={{
-              date_Search: [moment(), moment()],
-            }}
-          >
-            <Form.Item name="date_type">
-              <Radio.Group>
-                <Radio value="date_collect">วันที่เจาะ</Radio>
-                <Radio value="date_receive">วันที่รับ</Radio>
-                <Radio value="date_expired">วันหมดอายุ</Radio>
-              </Radio.Group>
-            </Form.Item>
-            <Form.Item name="date_Search">
-              <RangePicker
-                placeholder={["วันเริ่ม", "วันสุดท้าย"]}
-                format="DD-MM-YYYY"
-                locale={th_TH}
-              />
-            </Form.Item>
-            <Form.Item name="unit_no">
-              <Input placeholder="Unit No" />
-            </Form.Item>
-            <Form.Item name="antibody">
-              <Input placeholder="Antibody / Antigen" />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Search
-              </Button>
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" danger>
-                {/* onClick={ClearSearch} */}
-                Clear
-              </Button>
-            </Form.Item>
-          </Form>
+          <Col span={21}>
+            <Form
+              form={frmSearch}
+              layout="inline"
+              onFinish={onFinishSearch}
+              initialValues={{
+                date_Search: [moment(), moment()],
+              }}
+            >
+              <Form.Item name="date_Search" label="ค้นหาจากวันที่">
+                <RangePicker
+                  placeholder={["วันเริ่ม", "วันสุดท้าย"]}
+                  format="DD-MM-YYYY"
+                  locale={th_TH}
+                />
+              </Form.Item>
+              <Form.Item
+                name="keyword"
+                label="ค้นหาจากชื่อ-สกุล / เลขประจำตัวประชาชน"
+              >
+                <Input placeholder="ชื่อ-สกุล / เลขประจำตัวประชาชน" />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">
+                  Search
+                </Button>
+              </Form.Item>
+            </Form>
+          </Col>
+          <Col span={3}>
+            <Button
+              type="primary"
+              style={{ background: "#08979c", borderColor: "#e6fffb" }}
+              href="/Donor_register"
+            >
+              ลงทะเบียนผู้มาบริจาค
+            </Button>
+          </Col>
         </Row>
         <br />
-        <Table columns={columns} dataSource={newDonorlist} />
+        <Row>
+          <Col span={24}>
+            <Table columns={columns} dataSource={newDonorlist} />
+          </Col>
+        </Row>
       </Layout>
     </>
   );

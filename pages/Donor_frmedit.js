@@ -4,7 +4,6 @@ import {
   PrinterOutlined,
   ProfileOutlined,
   RetweetOutlined,
-  SearchOutlined,
   UserDeleteOutlined,
 } from "@ant-design/icons";
 import {
@@ -39,7 +38,6 @@ function Donor_frmedit() {
   const [newDonorlist, setnewDonorlist] = useState({});
   const [newCID, setnewCID] = useState();
   const router = useRouter();
-
   const [newProvince, setProvince] = useState([]);
   const [newAmpure, setAmpure] = useState([]);
   const [newTumbon, setTumbon] = useState([]);
@@ -48,9 +46,6 @@ function Donor_frmedit() {
   const [newAmpure_new, setAmpure_new] = useState([]);
   const [newTumbon_new, setTumbon_new] = useState([]);
   const [newZip_new, setZip_new] = useState([]);
-  const [frmAdd] = Form.useForm();
-  const [frmOpen] = Form.useForm();
-  const [frmOpenAdd2] = Form.useForm();
   const [newBloodgroup, setBloodgroup] = useState([]);
   const [newPname, setNewPname] = useState([]);
   const [newSex, setSex] = useState([]);
@@ -59,31 +54,40 @@ function Donor_frmedit() {
   const [strAge, setstrAge] = useState();
   const [newStrBirthday, setStrBirthday] = useState();
 
-  const onChange = (e) => {
+  //------------------------------------//
+
+  const [frmOpen] = Form.useForm();
+
+  const onCheckaddress = async (e) => {
     console.log(`checked = ${e.target.checked}`);
     if (e.target.checked) {
-      // const formData = frmOpenAdd2.getFieldsValue();
-      // console.log("formData", formData);
-      console.log("add2", newDonorlist);
-      frmOpenAdd2.setFieldsValue({
-        addrpart_new: newDonorlist?.addrpart,
-        soipart_new: newDonorlist?.soipart,
-        moopart_new: newDonorlist?.moopart,
-        roadpart_new: newDonorlist?.roadpart,
-        chwpart_new: Number(newDonorlist?.chwpart),
-        amppart_new: Number(newDonorlist?.amppart),
-        tmbpart_new: newDonorlist?.tmbpart,
-        // soipart_new: formData.soipart,
-        // moopart_new: formData.moopart,
-        // roadpart_new: formData.roadpart,
-        // chwpart_new: formData.chwpart,
-        // amppart_new: formData.amppart,
-        // tmbpart_new: formData.tmbpart,
-        // postcode_new: formData.postcode,
+      const formData = frmOpen.getFieldsValue();
+      console.log("formData", formData);
+      frmOpen.setFieldsValue({
+        addrpart_new: formData.addrpart,
+        soipart_new: formData.soipart,
+        moopart_new: formData.moopart,
+        roadpart_new: formData.roadpart,
+        chwpart_new: formData.chwpart,
+        amppart_new: formData.amppart,
+        tmbpart_new: formData.tmbpart,
+        postcode_new: formData.postcode,
       });
-      console.log("sssffs", addrpart_new);
+      await Fetch_Aumpure_new(formData.chwpart);
+      await Fetch_Tumbon_new(formData.amppart);
+      await Fetch_Zip_new(formData.tmbpart);
+    } else {
+      frmOpen.setFieldsValue({
+        addrpart_new: "",
+        soipart_new: "",
+        moopart_new: "",
+        roadpart_new: "",
+        chwpart_new: "",
+        amppart_new: "",
+        tmbpart_new: "",
+      });
       setZip_new({
-        zipcode: result.data[0].postcode,
+        postcode_new: "",
       });
     }
   };
@@ -99,8 +103,6 @@ function Donor_frmedit() {
     setnewDonorlist(result.data[0]);
     Fetch_Aumpure(result.data[0].chwpart);
     Fetch_Tumbon(result.data[0].amppart);
-    Fetch_Aumpure_new(result.data[0].chwpart);
-    Fetch_Tumbon_new(result.data[0].amppart);
     Fetch_Zip(result.data[0].tmbpart);
     console.log("dddddfdf", result.data);
 
@@ -109,10 +111,8 @@ function Donor_frmedit() {
       chwpart: Number(result.data[0].chwpart),
       job: Number(result.data[0].job),
       amppart: Number(result.data[0]?.amppart),
-      tmbpart: result.data[0]?.tmbpart,
       dob: moment(result.data[0]?.dob),
-      // tmbpart_new: result.data[0]?.tmbpart_new,
-      // amppart_new: Number(result.data[0]?.amppart_new),
+      tmbpart: result.data[0]?.tmbpart,
       age: result.data[0].age,
       marrystatus: Number(result.data[0].marrystatus),
     });
@@ -158,39 +158,29 @@ function Donor_frmedit() {
     const result = await api.get("/Get_mary");
     setMary(result.data);
   };
-
+  // fecth addrees //
   const Fetch_Province = async () => {
     const result = await api.get("/Get_Province");
     setProvince(result.data);
   };
 
   const Fetch_Aumpure = async (value) => {
-    console.log("cccc", value);
     const result = await api.get("/Get_Aumpure", {
       params: {
         PROVINCE_ID: value,
       },
     });
     setAmpure(result.data);
-
-    frmAdd.setFieldsValue({
-      amppart: "",
-      tmbpart: "",
-    });
     setZip("");
-    console.log("อำเภอ", result.data);
   };
 
   const Fetch_Tumbon = async (value) => {
-    console.log("logggg", value);
     const result = await api.get("/Get_Tumbon", {
       params: {
         AMPHUR_ID: value,
       },
     });
-
     setTumbon(result.data);
-    console.log("ตำบล", result.data);
   };
 
   const Fetch_Zip = async (value) => {
@@ -200,43 +190,31 @@ function Donor_frmedit() {
       },
     });
     setZip(result.data[0]);
-
-    console.log("ไปรษณีย์", result.data);
   };
-
-  // new addrees
+  // end fecth addrees //
+  // new fecth addrees //
   const Fetch_Province_new = async () => {
     const result = await api.get("/Get_Province_new");
     setProvince_new(result.data);
   };
 
   const Fetch_Aumpure_new = async (value) => {
-    console.log("cccc", value);
     const result = await api.get("/Get_Aumpure_new", {
       params: {
         PROVINCE_ID: value,
       },
     });
     setAmpure_new(result.data);
-
-    frmAdd.setFieldsValue({
-      amppart: "",
-      tmbpart: "",
-    });
     setZip_new("");
-    console.log("อำเภอ", result.data);
   };
 
   const Fetch_Tumbon_new = async (value) => {
-    console.log("logggg", value);
     const result = await api.get("/Get_Tumbon_new", {
       params: {
         AMPHUR_ID: value,
       },
     });
-
     setTumbon_new(result.data);
-    console.log("ตำบล", result.data);
   };
 
   const Fetch_Zip_new = async (value) => {
@@ -246,10 +224,8 @@ function Donor_frmedit() {
       },
     });
     setZip_new(result.data[0]);
-
-    console.log("ไปรษณีย์", result.data);
   };
-
+  //end new fecth addrees //
   // new addrees
   const dataSource = [
     {
@@ -325,7 +301,6 @@ function Donor_frmedit() {
 
   const setDate = (dateValue) => {
     const a = moment();
-
     const b = moment(dateValue, "YYYY-MM-DD");
     setStrBirthday(b);
     const age = moment.duration(a.diff(b));
@@ -333,118 +308,74 @@ function Donor_frmedit() {
     const months = age.months();
     const day = age.days();
     const Age = years + " ปี " + months + " เดือน " + day + " วัน";
-    console.log("DateValues------------- ", Age);
     setstrAge(Age);
   };
 
   return (
     <>
-      <style jsx>{`
-        .frmedit {
-          padding: 10px;
-          background: #ececec;
-        }
-        .gutter-box {
-          padding: 8px 0;
-          background: #00a0e9;
-        }
-      `}</style>
+      <style jsx>
+        {`
+          .frmedit {
+            padding: 10px;
+            background: #ececec;
+          }
+          .gutter-box {
+            padding: 8px 0;
+            background: #00a0e9;
+          }
+        `}
+      </style>
       <Layout>
-        <Header></Header>
         <Content>
           <Form form={frmOpen}>
             <Space direction="vertical" style={{ width: "100%" }}>
+              <Row gutter={23} justify="center">
+                <Col span={5} style={{ textAlign: "center" }}>
+                  <Card title="รูปภาพ" bordered={false}>
+                    <Image
+                      width="100%"
+                      src={`http://localhost:3306/image/${
+                        newDonorlist?.image
+                      }?pathType=2&date=${moment().format("HHmmss")}`}
+                    />
+                  </Card>
+                </Col>
+                <Col span={18}>
+                  <Card
+                    title="เลขประจำตัว"
+                    bordered={false}
+                    style={{ height: "100%" }}
+                  >
+                    <Form.Item
+                      name=""
+                      label="เลขประจำตัวผู้บริจาค"
+                      style={{
+                        display: "inline-block",
+                        width: "calc(41% - 8px)",
+                        margin: "0 20px",
+                      }}
+                    >
+                      <Input />
+                    </Form.Item>
+                    <Form.Item
+                      name="cid"
+                      label="เลขประจำตัวประชาชน"
+                      rules={[{ required: false }]}
+                      style={{
+                        display: "inline-block",
+                        width: "calc(41% - 8px)",
+                        margin: "0 60px",
+                      }}
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Card>
+                </Col>
+              </Row>
+
               <div className="frmedit">
                 <Card title="ลงทะเบียนผู้บริจาคเลือด" bordered={false}>
                   <Space direction="vertical" style={{ width: "100%" }}>
-                    <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                      <Col className="gutter-row" span={8}>
-                        <div>
-                          <Form.Item
-                            label="รหัสผู้บริจาค"
-                            // name=""
-                            icon={<SearchOutlined />}
-                            style={
-                              {
-                                // display: "inline-block",
-                                // width: "calc(30% - 8px)",
-                                // margin: "0 8px",
-                              }
-                            }
-                            // rules={[
-                            //   {
-                            //     required: true,
-                            //     message: "!",
-                            //   },
-                            // ]}
-                          >
-                            <Input />
-                          </Form.Item>
-                        </div>
-                      </Col>
-                      {/* <Col className="gutter-row" span={1}>
-                        <div>
-                          <Tooltip title="search">
-                            <Button
-                              type="dashed"
-                              shape="circle"
-                              icon={<SearchOutlined />}
-                              size="large"
-                              style={{
-                                // display: "inline-block",
-                                // width: "calc(30% - 8px)",
-                                margin: "0 8px",
-                              }}
-                            />
-                          </Tooltip>
-                        </div>
-                      </Col> */}
-                      <Col className="gutter-row" span={8}>
-                        <div>
-                          <Form.Item
-                            label="เลขประจำตัวประชาชน"
-                            name="cid"
-                            // icon={<SearchOutlined />}
-
-                            // rules={[
-                            //   {
-                            //     required: true,
-                            //     message: "!",
-                            //   },
-                            // ]}
-                          >
-                            <Input />
-                          </Form.Item>
-                        </div>
-                      </Col>
-                      {/* <Col className="gutter-row" span={1}>
-                        <div>
-                          <Tooltip title="search">
-                            <Button
-                              type="dashed"
-                              shape="circle"
-                              icon={<SearchOutlined />}
-                              size="large"
-                              style={{
-                                // display: "inline-block",
-                                // width: "calc(30% - 8px)",
-                                margin: "0 8px",
-                              }}
-                            />
-                          </Tooltip>
-                        </div>
-                      </Col> */}
-                      <Col className="gutter-row" span={6}>
-                        <div>
-                          <Image
-                            width={250}
-                            src={`http://localhost:3306/image/${
-                              newDonorlist?.image
-                            }?pathType=2&date=${moment().format("HHmmss")}`}
-                          />
-                        </div>
-                      </Col>
-                    </Row>
                     <Form.Item
                       label="หมู่ของกรุ๊ปเลือด"
                       style={{ marginBottom: 0 }}
@@ -662,10 +593,8 @@ function Donor_frmedit() {
                       style={{ marginBottom: 0 }}
                     ></div>
                     <Form.Item
-                      // {...config}
                       name="dob"
                       label="เลือกวันที่เพื่อคำนวณอายุ"
-                      // rules={[{ required: true }]}
                       style={{
                         display: "inline-block",
                         width: "calc(100% - 20px)",
@@ -698,7 +627,7 @@ function Donor_frmedit() {
                           margin: "0 8px",
                         }}
                       >
-                        <Input placeholder="บ้านเลขที่" />
+                        <Input placeholder="บ้านเลขที่" disabled />
                       </Form.Item>
                       <Form.Item
                         name="soipart"
@@ -710,7 +639,7 @@ function Donor_frmedit() {
                           margin: "0 8px",
                         }}
                       >
-                        <Input placeholder="ซอย" />
+                        <Input placeholder="ซอย" disabled />
                       </Form.Item>
                       <Form.Item
                         name="moopart"
@@ -722,7 +651,7 @@ function Donor_frmedit() {
                           margin: "0 8px",
                         }}
                       >
-                        <Input placeholder="หมู่" />
+                        <Input placeholder="หมู่" disabled />
                       </Form.Item>
                       <Form.Item
                         name="roadpart"
@@ -734,7 +663,7 @@ function Donor_frmedit() {
                           margin: "0 8px",
                         }}
                       >
-                        <Input placeholder="ถนน" />
+                        <Input placeholder="ถนน" disabled />
                       </Form.Item>
                       <Form.Item
                         label="จังหวัด"
@@ -746,7 +675,7 @@ function Donor_frmedit() {
                           margin: "0 8px",
                         }}
                       >
-                        <Select onChange={Fetch_Aumpure}>
+                        <Select onChange={Fetch_Aumpure} disabled>
                           {newProvince.map((item) => (
                             <Option
                               key={item.PROVINCE_ID}
@@ -767,7 +696,7 @@ function Donor_frmedit() {
                           margin: "0 8px",
                         }}
                       >
-                        <Select onChange={Fetch_Tumbon}>
+                        <Select onChange={Fetch_Tumbon} disabled>
                           {newAmpure?.map((item) => (
                             <Option key={item.AMPHUR_ID} value={item.AMPHUR_ID}>
                               {item.AMPHUR_NAME}
@@ -776,7 +705,6 @@ function Donor_frmedit() {
                         </Select>
                       </Form.Item>
                       <Form.Item
-                        className="sss"
                         label="ตำบล"
                         name="tmbpart"
                         //   rules={[{ required: true }]}
@@ -786,8 +714,142 @@ function Donor_frmedit() {
                           margin: "0 8px",
                         }}
                       >
-                        <Select onChange={Fetch_Zip}>
+                        <Select onChange={Fetch_Zip} disabled>
                           {newTumbon.map((item) => (
+                            <Option
+                              key={item.DISTRICT_CODE}
+                              value={item.DISTRICT_CODE}
+                            >
+                              {item.DISTRICT_NAME}
+                            </Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                      <Form.Item>
+                        <Input
+                          label="ไปรษณีย์"
+                          name="postcode"
+                          rules={[{ required: true }]}
+                          style={{
+                            display: "inline-block",
+                            width: "calc(22% - 8px)",
+                            margin: "0 8px",
+                            top: "32px",
+                            textAlign: "center",
+                          }}
+                          placeholder="ไปรษณีย์"
+                          value={newZip?.zipcode}
+                          disabled
+                        />
+                      </Form.Item>
+                    </Card>
+                    {/* ----------------------------------------------------- */}
+                    <Card title="ที่อยู่ปัจจุบัน" bordered={false}>
+                      <Checkbox onChange={onCheckaddress}>
+                        <Text underline>ใช้ที่อยู่ตามบัตรประชาชน</Text>
+                      </Checkbox>
+                      <br />
+
+                      <Form.Item
+                        name="addrpart_new"
+                        label="บ้านเลขที่"
+                        //   rules={[{ required: true }]}
+                        style={{
+                          display: "inline-block",
+                          width: "calc(15% - 8px)",
+                          margin: "0 8px",
+                        }}
+                      >
+                        <Input placeholder="บ้านเลขที่" />
+                      </Form.Item>
+                      <Form.Item
+                        name="soipart_new"
+                        label="ซอย"
+                        rules={[{ required: false }]}
+                        style={{
+                          display: "inline-block",
+                          width: "calc(30% - 8px)",
+                          margin: "0 8px",
+                        }}
+                      >
+                        <Input placeholder="ซอย" />
+                      </Form.Item>
+                      <Form.Item
+                        name="moopart_new"
+                        label="หมู่"
+                        rules={[{ required: false }]}
+                        style={{
+                          display: "inline-block",
+                          width: "calc(20% - 8px)",
+                          margin: "0 8px",
+                        }}
+                      >
+                        <Input placeholder="หมู่" />
+                      </Form.Item>
+                      <Form.Item
+                        name="roadpart_new"
+                        label="ถนน"
+                        rules={[{ required: false }]}
+                        style={{
+                          display: "inline-block",
+                          width: "calc(30% - 8px)",
+                          margin: "0 8px",
+                        }}
+                      >
+                        <Input placeholder="ถนน" />
+                      </Form.Item>
+                      <Form.Item
+                        label="จังหวัด"
+                        name="chwpart_new"
+                        //   rules={[{ required: true }]}
+                        style={{
+                          display: "inline-block",
+                          width: "calc(20% - 8px)",
+                          margin: "0 8px",
+                        }}
+                      >
+                        <Select onChange={Fetch_Aumpure_new}>
+                          {newProvince_new.map((item) => (
+                            <Option
+                              key={item.PROVINCE_ID}
+                              value={item.PROVINCE_ID}
+                            >
+                              {item.PROVINCE_NAME}
+                            </Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                      <Form.Item
+                        label="อำเภอ"
+                        name="amppart_new"
+                        //   rules={[{ required: true }]}
+                        style={{
+                          display: "inline-block",
+                          width: "calc(25% - 8px)",
+                          margin: "0 8px",
+                        }}
+                      >
+                        <Select onChange={Fetch_Tumbon_new}>
+                          {newAmpure_new?.map((item) => (
+                            <Option key={item.AMPHUR_ID} value={item.AMPHUR_ID}>
+                              {item.AMPHUR_NAME}
+                            </Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                      <Form.Item
+                        className="sss"
+                        label="ตำบล"
+                        name="tmbpart_new"
+                        //   rules={[{ required: true }]}
+                        style={{
+                          display: "inline-block",
+                          width: "calc(25% - 8px)",
+                          margin: "0 8px",
+                        }}
+                      >
+                        <Select onChange={Fetch_Zip_new}>
+                          {newTumbon_new.map((item) => (
                             <Option
                               key={item.DISTRICT_CODE}
                               value={item.DISTRICT_CODE}
@@ -800,7 +862,7 @@ function Donor_frmedit() {
                       {/* <Form.Item> */}
                       <Input
                         label="ไปรษณีย์"
-                        name="postcode"
+                        name="postcode_new"
                         rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
@@ -810,11 +872,23 @@ function Donor_frmedit() {
                           textAlign: "center",
                         }}
                         placeholder="ไปรษณีย์"
-                        value={newZip?.zipcode}
+                        value={newZip_new?.zipcode}
                       />
                       {/* </Form.Item> */}
+                      <Form.Item
+                        name="address_more"
+                        label="เพิ่มเติม"
+                        // name=""
+                        //   rules={[{ required: true }]}
+                        style={{
+                          display: "inline-block",
+                          width: "calc(100% - 8px)",
+                          margin: "0 8px",
+                        }}
+                      >
+                        <TextArea showCount maxLength={100} />
+                      </Form.Item>
                     </Card>
-
                     <br />
                     <Row>
                       <Space>
@@ -862,152 +936,9 @@ function Donor_frmedit() {
               </div>
             </Space>
           </Form>
-          <Form form={frmOpenAdd2}>
-            {" "}
-            <div className="frmedit">
-              <Card title="ที่อยู่ปัจจุบัน" bordered={false}>
-                <Checkbox onChange={onChange}>
-                  <Text underline>ใช้ที่อยู่ตามบัตรประชาชน</Text>
-                </Checkbox>
-                <br />
-                <Form.Item
-                  name="addrpart_new"
-                  label="บ้านเลขที่"
-                  //   rules={[{ required: true }]}
-                  style={{
-                    display: "inline-block",
-                    width: "calc(15% - 8px)",
-                    margin: "0 8px",
-                  }}
-                >
-                  <Input placeholder="บ้านเลขที่" />
-                </Form.Item>
-                <Form.Item
-                  name="soipart_new"
-                  label="ซอย"
-                  rules={[{ required: false }]}
-                  style={{
-                    display: "inline-block",
-                    width: "calc(30% - 8px)",
-                    margin: "0 8px",
-                  }}
-                >
-                  <Input placeholder="ซอย" />
-                </Form.Item>
-                <Form.Item
-                  name="moopart_new"
-                  label="หมู่"
-                  rules={[{ required: false }]}
-                  style={{
-                    display: "inline-block",
-                    width: "calc(20% - 8px)",
-                    margin: "0 8px",
-                  }}
-                >
-                  <Input placeholder="หมู่" />
-                </Form.Item>
-                <Form.Item
-                  name="roadpart_new"
-                  label="ถนน"
-                  rules={[{ required: false }]}
-                  style={{
-                    display: "inline-block",
-                    width: "calc(30% - 8px)",
-                    margin: "0 8px",
-                  }}
-                >
-                  <Input placeholder="ถนน" />
-                </Form.Item>
-                <Form.Item
-                  label="จังหวัด"
-                  name="chwpart_new"
-                  //   rules={[{ required: true }]}
-                  style={{
-                    display: "inline-block",
-                    width: "calc(20% - 8px)",
-                    margin: "0 8px",
-                  }}
-                >
-                  <Select onChange={Fetch_Aumpure_new}>
-                    {newProvince_new.map((item) => (
-                      <Option key={item.PROVINCE_ID} value={item.PROVINCE_ID}>
-                        {item.PROVINCE_NAME}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-                <Form.Item
-                  label="อำเภอ"
-                  name="amppart_new"
-                  //   rules={[{ required: true }]}
-                  style={{
-                    display: "inline-block",
-                    width: "calc(25% - 8px)",
-                    margin: "0 8px",
-                  }}
-                >
-                  <Select onChange={Fetch_Tumbon_new}>
-                    {newAmpure_new?.map((item) => (
-                      <Option key={item.AMPHUR_ID} value={item.AMPHUR_ID}>
-                        {item.AMPHUR_NAME}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-                <Form.Item
-                  className="sss"
-                  label="ตำบล"
-                  name="tmbpart_new"
-                  //   rules={[{ required: true }]}
-                  style={{
-                    display: "inline-block",
-                    width: "calc(25% - 8px)",
-                    margin: "0 8px",
-                  }}
-                >
-                  <Select onChange={Fetch_Zip_new}>
-                    {newTumbon_new.map((item) => (
-                      <Option
-                        key={item.DISTRICT_CODE}
-                        value={item.DISTRICT_CODE}
-                      >
-                        {item.DISTRICT_NAME}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-                {/* <Form.Item> */}
-                <Input
-                  label="ไปรษณีย์"
-                  name="postcode_new"
-                  rules={[{ required: true }]}
-                  style={{
-                    display: "inline-block",
-                    width: "calc(22% - 8px)",
-                    margin: "0 8px",
-                    top: "32px",
-                    textAlign: "center",
-                  }}
-                  placeholder="ไปรษณีย์"
-                  value={newZip_new?.zipcode}
-                />
-                {/* </Form.Item> */}
-                <Form.Item
-                  name="address_more"
-                  label="เพิ่มเติม"
-                  // name=""
-                  //   rules={[{ required: true }]}
-                  style={{
-                    display: "inline-block",
-                    width: "calc(100% - 8px)",
-                    margin: "0 8px",
-                  }}
-                >
-                  <TextArea showCount maxLength={100} onChange={onChange} />
-                </Form.Item>
-              </Card>
-            </div>
-          </Form>
+
+          {/* --------------------------------- */}
+
           <div className="frmedit">
             <Card title="ประวัติการบริจาค" bordered={false}>
               <Table dataSource={dataSource} columns={columns} />
