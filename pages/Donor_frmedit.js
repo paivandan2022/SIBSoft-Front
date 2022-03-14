@@ -20,7 +20,6 @@ import {
   Select,
   Space,
   Table,
-  Tag,
   Typography,
 } from "antd";
 import moment from "moment";
@@ -35,8 +34,7 @@ const { Header, Footer, Content } = Layout;
 const style = { background: "#0092ff", padding: "8px 0" };
 
 function Donor_frmedit() {
-  const [newDonorlist, setnewDonorlist] = useState({});
-  const [newCID, setnewCID] = useState();
+  const [newDonorlist, setnewDonorlist] = useState([]);
   const router = useRouter();
   const [newProvince, setProvince] = useState([]);
   const [newAmpure, setAmpure] = useState([]);
@@ -48,7 +46,7 @@ function Donor_frmedit() {
   const [newZip_new, setZip_new] = useState([]);
   const [newBloodgroup, setBloodgroup] = useState([]);
   const [newPname, setNewPname] = useState([]);
-  const [newSex, setSex] = useState([]);
+  const [newSex, setNewSex] = useState([]);
   const [newOccu, setOccu] = useState([]);
   const [newMary, setMary] = useState([]);
   const [strAge, setstrAge] = useState();
@@ -94,17 +92,15 @@ function Donor_frmedit() {
 
   const Fetch_frmedit = async (value) => {
     console.log("--------------CID ", value);
-    const result = await api.get("/Get_donor_list", {
+    const result = await api.get("/Get_donor_list_open", {
       params: {
         id: value,
       },
     });
-
-    setnewDonorlist(result.data[0]);
+    setnewDonorlist(result.data);
     Fetch_Aumpure(result.data[0].chwpart);
     Fetch_Tumbon(result.data[0].amppart);
     Fetch_Zip(result.data[0].tmbpart);
-    console.log("dddddfdf", result.data);
 
     frmOpen.setFieldsValue({
       ...result.data[0],
@@ -115,6 +111,7 @@ function Donor_frmedit() {
       tmbpart: result.data[0]?.tmbpart,
       age: result.data[0].age,
       marrystatus: Number(result.data[0].marrystatus),
+      sex: result.data[0].sex,
     });
     setZip({
       zipcode: result.data[0].postcode,
@@ -141,13 +138,13 @@ function Donor_frmedit() {
   };
 
   const Fetch_Sex = async () => {
-    const result = await api.get("/Get_group");
-    setBloodgroup(result.data);
+    const result = await api.get("/Get_sex");
+    setNewSex(result.data);
   };
 
   const Fetch_bloodgroup = async () => {
-    const result = await api.get("/Get_sex");
-    setSex(result.data);
+    const result = await api.get("/Get_group");
+    setBloodgroup(result.data);
   };
 
   const Fetch_occu = async () => {
@@ -226,74 +223,6 @@ function Donor_frmedit() {
     setZip_new(result.data[0]);
   };
   //end new fecth addrees //
-  // new addrees
-  const dataSource = [
-    {
-      key: "1",
-      no: "1",
-      no_bag: 123,
-      date_donor: "22 กุมภาพันธ์ 2565",
-      bag: "6 Unit",
-      bloodgroup: "AB",
-      result: <Tag color="green">ปกติ</Tag>,
-      status: "รอนำส่ง",
-      address: "ออกหน่วย",
-    },
-    {
-      key: "2",
-      no: "2",
-      no_bag: 789,
-      date_donor: "15 มกราคม 2565",
-      bag: "6 Unit",
-      bloodgroup: "O",
-      result: <Tag color="red">ติดเชื้อ</Tag>,
-      status: "กำลังดำเนินการ",
-      address: "โรงพยาบาล",
-    },
-  ];
-
-  const columns = [
-    {
-      title: "ครั้งที่",
-      dataIndex: "no",
-      key: "no",
-    },
-    {
-      title: "เลขที่ถุงเลือด",
-      dataIndex: "no_bag",
-      key: "no_bag",
-    },
-    {
-      title: "วันที่บริจาคเลือด",
-      dataIndex: "date_donor",
-      key: "date_donor",
-    },
-    {
-      title: "สถานที่",
-      dataIndex: "address",
-      key: "address",
-    },
-    {
-      title: "ถุง",
-      dataIndex: "bag",
-      key: "bag",
-    },
-    {
-      title: "หมู่เลือด",
-      dataIndex: "bloodgroup",
-      key: "bloodgroup",
-    },
-    {
-      title: "ผลการตรวจ",
-      dataIndex: "result",
-      key: "result",
-    },
-    {
-      title: "สถานะ",
-      dataIndex: "status",
-      key: "address",
-    },
-  ];
 
   const setDate = (dateValue) => {
     const a = moment();
@@ -306,6 +235,56 @@ function Donor_frmedit() {
     const Age = years + " ปี " + months + " เดือน " + day + " วัน";
     setstrAge(Age);
   };
+
+  const onFinish_Data = async (value) => {
+    console.log("Add_donor_frmedit", value);
+
+    const result = await api.put(`/Add_donor_frmedit`, {
+      ...value,
+      birthday: moment(newStrBirthday).format("YYYY-MM-DD"),
+      postcode: newZip,
+      postcode_new: newZip_new,
+      image: `${value.cid}.jpg`,
+    });
+  };
+
+  const columns = [
+    {
+      title: "ครั้งที่",
+      dataIndex: "donor_count",
+      key: "donor_count",
+    },
+    {
+      title: "เลขที่ถุงเลือด",
+      dataIndex: "Unitnumber_dot",
+      key: "Unitnumber_dot",
+    },
+    {
+      title: "วันที่บริจาคเลือด",
+      dataIndex: "donor_date",
+      key: "donor_date",
+    },
+    {
+      title: "สถานที่",
+      dataIndex: "mobname",
+      key: "mobname",
+    },
+    {
+      title: "ถุง",
+      dataIndex: "donor_type",
+      key: "donor_type",
+    },
+    {
+      title: "หมู่เลือด",
+      dataIndex: "bag_gr",
+      key: "bag_gr",
+    },
+    {
+      title: "ผลการตรวจ",
+      dataIndex: "blood_result",
+      key: "blood_result",
+    },
+  ];
 
   return (
     <>
@@ -323,7 +302,7 @@ function Donor_frmedit() {
       </style>
       <Layout>
         <Content>
-          <Form form={frmOpen} Layout="vertical">
+          <Form form={frmOpen} onFinish={onFinish_Data} Layout="vertical">
             <Space direction="vertical" style={{ width: "100%" }}>
               <div className="frmedit">
                 <Card title="ลงทะเบียนผู้บริจาคเลือด" bordered={false}>
@@ -336,7 +315,7 @@ function Donor_frmedit() {
                               <Image
                                 width="25%"
                                 src={`http://localhost:3306/image/${
-                                  newDonorlist?.image
+                                  newDonorlist[0]?.image
                                 }?pathType=2&date=${moment().format("HHmmss")}`}
                               />
                             </Form.Item>
@@ -1120,7 +1099,7 @@ function Donor_frmedit() {
 
           <div className="frmedit">
             <Card title="ประวัติการบริจาค" bordered={false}>
-              <Table dataSource={dataSource} columns={columns} />
+              <Table dataSource={newDonorlist} columns={columns} />
             </Card>
           </div>
           <Row justify="end">
