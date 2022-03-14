@@ -704,11 +704,19 @@ function Donor_frmedit() {
                         //   rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
-                          width: "calc(15% - 8px)",
+                          width: "15%",
                           margin: "0 8px",
                         }}
                       >
-                        <Input placeholder="บ้านเลขที่" disabled />
+                        <Input
+                          placeholder="บ้านเลขที่"
+                          disabled
+                          style={{
+                            width: "100%",
+                            height: "40px",
+                            fontSize: "18px",
+                          }}
+                        />
                       </Form.Item>
                       <Form.Item
                         name="soipart"
@@ -716,11 +724,19 @@ function Donor_frmedit() {
                         rules={[{ required: false }]}
                         style={{
                           display: "inline-block",
-                          width: "calc(30% - 8px)",
+                          width: "15%",
                           margin: "0 8px",
                         }}
                       >
-                        <Input placeholder="ซอย" disabled />
+                        <Input
+                          placeholder="ซอย"
+                          disabled
+                          style={{
+                            width: "100%",
+                            height: "40px",
+                            fontSize: "18px",
+                          }}
+                        />
                       </Form.Item>
                       <Form.Item
                         name="moopart"
@@ -728,11 +744,19 @@ function Donor_frmedit() {
                         rules={[{ required: false }]}
                         style={{
                           display: "inline-block",
-                          width: "calc(20% - 8px)",
+                          width: "15%",
                           margin: "0 8px",
                         }}
                       >
-                        <Input placeholder="หมู่" disabled />
+                        <Input
+                          placeholder="หมู่"
+                          disabled
+                          style={{
+                            width: "100%",
+                            height: "40px",
+                            fontSize: "18px",
+                          }}
+                        />
                       </Form.Item>
                       <Form.Item
                         name="roadpart"
@@ -740,11 +764,19 @@ function Donor_frmedit() {
                         rules={[{ required: false }]}
                         style={{
                           display: "inline-block",
-                          width: "calc(30% - 8px)",
+                          width: "15%",
                           margin: "0 8px",
                         }}
                       >
-                        <Input placeholder="ถนน" disabled />
+                        <Input
+                          placeholder="ถนน"
+                          disabled
+                          style={{
+                            width: "100%",
+                            height: "40px",
+                            fontSize: "18px",
+                          }}
+                        />
                       </Form.Item>
                       <Form.Item
                         label="จังหวัด"
@@ -752,11 +784,19 @@ function Donor_frmedit() {
                         //   rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
-                          width: "calc(20% - 8px)",
+                          width: "25%",
                           margin: "0 8px",
                         }}
                       >
-                        <Select onChange={Fetch_Aumpure} disabled>
+                        <Select
+                          onChange={Fetch_Aumpure}
+                          disabled
+                          style={{
+                            width: "100%",
+                            fontSize: "18px",
+                          }}
+                          size="large"
+                        >
                           {newProvince.map((item) => (
                             <Option
                               key={item.PROVINCE_ID}
@@ -773,11 +813,19 @@ function Donor_frmedit() {
                         //   rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
-                          width: "calc(25% - 8px)",
+                          width: "20%",
                           margin: "0 8px",
                         }}
                       >
-                        <Select onChange={Fetch_Tumbon} disabled>
+                        <Select
+                          onChange={Fetch_Tumbon}
+                          disabled
+                          style={{
+                            width: "100%",
+                            fontSize: "18px",
+                          }}
+                          size="large"
+                        >
                           {newAmpure?.map((item) => (
                             <Option key={item.AMPHUR_ID} value={item.AMPHUR_ID}>
                               {item.AMPHUR_NAME}
@@ -791,11 +839,19 @@ function Donor_frmedit() {
                         //   rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
-                          width: "calc(25% - 8px)",
+                          width: "20%",
                           margin: "0 8px",
                         }}
                       >
-                        <Select onChange={Fetch_Zip} disabled>
+                        <Select
+                          onChange={Fetch_Zip}
+                          disabled
+                          style={{
+                            width: "100%",
+                            fontSize: "18px",
+                          }}
+                          size="large"
+                        >
                           {newTumbon.map((item) => (
                             <Option
                               key={item.DISTRICT_CODE}
@@ -806,21 +862,25 @@ function Donor_frmedit() {
                           ))}
                         </Select>
                       </Form.Item>
-                      <Form.Item>
+                      <Form.Item
+                        label="ไปรษณีย์"
+                        name="postcode"
+                        //   rules={[{ required: true }]}
+                        style={{
+                          display: "inline-block",
+                          width: "20%",
+                          margin: "0 8px",
+                        }}
+                      >
                         <Input
-                          label="ไปรษณีย์"
-                          name="postcode"
-                          rules={[{ required: true }]}
+                          disabled
                           style={{
-                            display: "inline-block",
-                            width: "calc(22% - 8px)",
-                            margin: "0 8px",
-                            top: "32px",
-                            textAlign: "center",
+                            width: "100%",
+                            height: "40px",
+                            fontSize: "18px",
                           }}
                           placeholder="ไปรษณีย์"
                           value={newZip?.zipcode}
-                          disabled
                         />
                       </Form.Item>
                     </Card>
@@ -837,11 +897,18 @@ function Donor_frmedit() {
                         //   rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
-                          width: "calc(15% - 8px)",
+                          width: "15%",
                           margin: "0 8px",
                         }}
                       >
-                        <Input placeholder="บ้านเลขที่" />
+                        <Input
+                          placeholder="บ้านเลขที่"
+                          style={{
+                            width: "100%",
+                            height: "40px",
+                            fontSize: "18px",
+                          }}
+                        />
                       </Form.Item>
                       <Form.Item
                         name="soipart_new"
@@ -849,11 +916,18 @@ function Donor_frmedit() {
                         rules={[{ required: false }]}
                         style={{
                           display: "inline-block",
-                          width: "calc(30% - 8px)",
+                          width: "15%",
                           margin: "0 8px",
                         }}
                       >
-                        <Input placeholder="ซอย" />
+                        <Input
+                          placeholder="ซอย"
+                          style={{
+                            width: "100%",
+                            height: "40px",
+                            fontSize: "18px",
+                          }}
+                        />
                       </Form.Item>
                       <Form.Item
                         name="moopart_new"
@@ -861,11 +935,18 @@ function Donor_frmedit() {
                         rules={[{ required: false }]}
                         style={{
                           display: "inline-block",
-                          width: "calc(20% - 8px)",
+                          width: "15%",
                           margin: "0 8px",
                         }}
                       >
-                        <Input placeholder="หมู่" />
+                        <Input
+                          placeholder="หมู่"
+                          style={{
+                            width: "100%",
+                            height: "40px",
+                            fontSize: "18px",
+                          }}
+                        />
                       </Form.Item>
                       <Form.Item
                         name="roadpart_new"
@@ -873,11 +954,18 @@ function Donor_frmedit() {
                         rules={[{ required: false }]}
                         style={{
                           display: "inline-block",
-                          width: "calc(30% - 8px)",
+                          width: "15%",
                           margin: "0 8px",
                         }}
                       >
-                        <Input placeholder="ถนน" />
+                        <Input
+                          placeholder="ถนน"
+                          style={{
+                            width: "100%",
+                            height: "40px",
+                            fontSize: "18px",
+                          }}
+                        />
                       </Form.Item>
                       <Form.Item
                         label="จังหวัด"
@@ -885,11 +973,19 @@ function Donor_frmedit() {
                         //   rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
-                          width: "calc(20% - 8px)",
+                          width: "25%",
                           margin: "0 8px",
                         }}
                       >
-                        <Select onChange={Fetch_Aumpure_new}>
+                        <Select
+                          onChange={Fetch_Aumpure_new}
+                          style={{
+                            width: "100%",
+                            fontSize: "18px",
+                          }}
+                          size="large"
+                          placeholder="จังหวัด"
+                        >
                           {newProvince_new.map((item) => (
                             <Option
                               key={item.PROVINCE_ID}
@@ -906,11 +1002,19 @@ function Donor_frmedit() {
                         //   rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
-                          width: "calc(25% - 8px)",
+                          width: "20%",
                           margin: "0 8px",
                         }}
                       >
-                        <Select onChange={Fetch_Tumbon_new}>
+                        <Select
+                          onChange={Fetch_Tumbon_new}
+                          style={{
+                            width: "100%",
+                            fontSize: "18px",
+                          }}
+                          size="large"
+                          placeholder="อำเภอ"
+                        >
                           {newAmpure_new?.map((item) => (
                             <Option key={item.AMPHUR_ID} value={item.AMPHUR_ID}>
                               {item.AMPHUR_NAME}
@@ -925,11 +1029,19 @@ function Donor_frmedit() {
                         //   rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
-                          width: "calc(25% - 8px)",
+                          width: "20%",
                           margin: "0 8px",
                         }}
                       >
-                        <Select onChange={Fetch_Zip_new}>
+                        <Select
+                          onChange={Fetch_Zip_new}
+                          style={{
+                            width: "100%",
+                            fontSize: "18px",
+                          }}
+                          size="large"
+                          placeholder="ตำบล"
+                        >
                           {newTumbon_new.map((item) => (
                             <Option
                               key={item.DISTRICT_CODE}
@@ -940,22 +1052,26 @@ function Donor_frmedit() {
                           ))}
                         </Select>
                       </Form.Item>
-                      {/* <Form.Item> */}
-                      <Input
+                      <Form.Item
                         label="ไปรษณีย์"
                         name="postcode_new"
-                        rules={[{ required: true }]}
+                        //   rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
-                          width: "calc(22% - 8px)",
+                          width: "20%",
                           margin: "0 8px",
-                          top: "32px",
-                          textAlign: "center",
                         }}
-                        placeholder="ไปรษณีย์"
-                        value={newZip_new?.zipcode}
-                      />
-                      {/* </Form.Item> */}
+                      >
+                        <Input
+                          style={{
+                            width: "100%",
+                            height: "40px",
+                            fontSize: "18px",
+                          }}
+                          placeholder="ไปรษณีย์"
+                          value={newZip_new?.zipcode}
+                        />
+                      </Form.Item>
                       <Form.Item
                         name="address_more"
                         label="เพิ่มเติม"
