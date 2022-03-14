@@ -94,17 +94,16 @@ function Donor_frmedit() {
 
   const Fetch_frmedit = async (value) => {
     console.log("--------------CID ", value);
-    const result = await api.get("/Get_donor_list", {
+    const result = await api.get("/Get_donor_list_open", {
       params: {
         id: value,
       },
     });
-
+    console.log("dddddfdf", result.data);
     setnewDonorlist(result.data[0]);
     Fetch_Aumpure(result.data[0].chwpart);
     Fetch_Tumbon(result.data[0].amppart);
     Fetch_Zip(result.data[0].tmbpart);
-    console.log("dddddfdf", result.data);
 
     frmOpen.setFieldsValue({
       ...result.data[0],
@@ -349,7 +348,7 @@ function Donor_frmedit() {
                     >
                       <div>
                         <Form.Item
-                          name=""
+                          name="donor_no"
                           label="เลขประจำตัวผู้บริจาค"
                           style={{
                             display: "inline-block",
