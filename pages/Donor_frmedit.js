@@ -648,7 +648,11 @@ function Donor_frmedit() {
                           >
                             <Input
                               placeholder="โทรศัพท์"
-                              style={{ height: "40px" }}
+                              style={{
+                                width: "100%",
+                                height: "40px",
+                                fontSize: "18px",
+                              }}
                             />
                           </Form.Item>
                           <br />
@@ -664,7 +668,11 @@ function Donor_frmedit() {
                           >
                             <Input
                               placeholder="Email"
-                              style={{ height: "40px" }}
+                              style={{
+                                width: "100%",
+                                height: "40px",
+                                fontSize: "18px",
+                              }}
                             />
                           </Form.Item>
                         </Card>
