@@ -7,6 +7,7 @@ import {
 import {
   Avatar,
   Button,
+  Card,
   Col,
   DatePicker,
   Form,
@@ -124,13 +125,8 @@ const Donor_donation_list = () => {
     setnewDonorlist(result.data);
   };
 
-  const Fetch_Donor_list_open = async (params) => {
-    const result = await api.get("/Get_donor_list_open", { params });
-    console.log("รายชื่อผู้บริจาค", result.data);
-    setEditDonorlist(result.data);
-  };
   useEffect(async () => {
-    await Fetch_Donor_list_open();
+    // await Fetch_Donor_list_open();
     await Fetch_Donor_list({
       date_start: moment().format("YYYY-MM-DD"),
       date_end: moment().format("YYYY-MM-DD"),
@@ -217,6 +213,14 @@ const Donor_donation_list = () => {
               onClick={() => Bloodpopup(record.cid)}
             />
           </Tooltip>
+          <Tooltip title="ยืนยันข้อมูล">
+            <Button
+              style={{ fontSize: "5px", color: "green" }}
+              shape="circle"
+              icon={<DeleteOutlined />}
+              // onClick={countDown}
+            />
+          </Tooltip>
           <Tooltip title="ลบ">
             <Button
               style={{ fontSize: "5px", color: "Tomato" }}
@@ -292,11 +296,13 @@ const Donor_donation_list = () => {
           </Col>
         </Row>
         <br />
-        <Row>
-          <Col span={24}>
-            <Table columns={columns} dataSource={newDonorlist} />
-          </Col>
-        </Row>
+        <Card>
+          <Row>
+            <Col span={24}>
+              <Table columns={columns} dataSource={newDonorlist} />
+            </Col>
+          </Row>
+        </Card>
       </Layout>
     </>
   );
