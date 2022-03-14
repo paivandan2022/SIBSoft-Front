@@ -25,7 +25,6 @@ import {
 import th_TH from "antd/lib/date-picker/locale/th_TH";
 import moment from "moment";
 import "moment/locale/th";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Layout } from "../components";
 import api from "../lib/api";
@@ -52,53 +51,94 @@ const countDown = () => {
   }, secondsToGo * 1000);
 };
 
+const Editpopup = (value) => {
+  const scW = screen.width / 2;
+  const scH = screen.height / 2;
+  const appW = 1280;
+  const appH = 720;
+  const url = "/Donor_frmedit?id=" + value;
+  const title = "TEST";
+  const callW = appW / 2;
+  const callH = appH / 2;
+
+  const str =
+    "width=" +
+    appW +
+    ",height=" +
+    appH +
+    ",top=" +
+    (scH - callH) +
+    ",left=" +
+    (scW - callW);
+  window.open(url, title, str);
+};
+
+const Bloodpopup = (value) => {
+  const scW = screen.width / 2;
+  const scH = screen.height / 2;
+  const appW = 1280;
+  const appH = 720;
+  const url = "/Donor_frmblood?id=" + value;
+  const title = "TEST";
+  const callW = appW / 2;
+  const callH = appH / 2;
+
+  const str =
+    "width=" +
+    appW +
+    ",height=" +
+    appH +
+    ",top=" +
+    (scH - callH) +
+    ",left=" +
+    (scW - callW);
+  window.open(url, title, str);
+};
 const Donor_donation_list = () => {
   const [newDonorlist, setnewDonorlist] = useState([]);
+  const [editDonorlist, setEditDonorlist] = useState([]);
+
   const [frmSearch] = Form.useForm();
-  const Editpopup = (value) => {
-    const scW = screen.width / 2;
-    const scH = screen.height / 2;
-    const appW = 1280;
-    const appH = 720;
-    const url = "/Donor_frmedit?id=" + value;
-    const title = "TEST";
-    const callW = appW / 2;
-    const callH = appH / 2;
 
-    const str =
-      "width=" +
-      appW +
-      ",height=" +
-      appH +
-      ",top=" +
-      (scH - callH) +
-      ",left=" +
-      (scW - callW);
-    window.open(url, title, str);
+  //-----------------------------------//
+  const onFinishSearch = async (value) => {
+    console.log("value------>", value);
+    try {
+      const params = {
+        ...value,
+        date_start: moment(value.date_Search[0]).format("YYYY-MM-DD"),
+        date_end: moment(value.date_Search[1]).format("YYYY-MM-DD"),
+      };
+      delete params.date_Search;
+      console.log("params", params);
+
+      await Fetch_Donor_list(params);
+    } catch (error) {
+      Modal.error({ title: "Error" });
+    }
+  };
+  //-----------------------------------//
+
+  const Fetch_Donor_list = async (params) => {
+    const result = await api.get("/Get_donor_list", { params });
+    console.log("รายชื่อผู้บริจาค", result.data);
+    setnewDonorlist(result.data);
   };
 
-  const Bloodpopup = (value) => {
-    const scW = screen.width / 2;
-    const scH = screen.height / 2;
-    const appW = 1280;
-    const appH = 720;
-    const url = "/Donor_frmblood?id=" + value;
-    const title = "TEST";
-    const callW = appW / 2;
-    const callH = appH / 2;
-
-    const str =
-      "width=" +
-      appW +
-      ",height=" +
-      appH +
-      ",top=" +
-      (scH - callH) +
-      ",left=" +
-      (scW - callW);
-    window.open(url, title, str);
+  const Fetch_Donor_list_open = async (params) => {
+    const result = await api.get("/Get_donor_list_open", { params });
+    console.log("รายชื่อผู้บริจาค", result.data);
+    setEditDonorlist(result.data);
   };
+  useEffect(async () => {
+    await Fetch_Donor_list_open();
+    await Fetch_Donor_list({
+      date_start: moment().format("YYYY-MM-DD"),
+      date_end: moment().format("YYYY-MM-DD"),
+    });
+  }, []);
 
+  //-------------------------//
   const columns = [
     {
       title: "รูปภาพ",
@@ -175,12 +215,8 @@ const Donor_donation_list = () => {
               style={{ fontSize: "5px", color: "brue" }}
               shape="circle"
               icon={<EditOutlined />}
-              // onClick={Bloodpopup}
               onClick={() => Bloodpopup(record.cid)}
-              // onclick={window.open("", "", "width=800,height=600")}
             />
-
-            {/* <EditOutlined style={{ fontSize: "20px", color: "green" }} shape="circle"/> */}
           </Tooltip>
           <Tooltip title="ยืนยันข้อมูล">
             <Button
@@ -203,18 +239,7 @@ const Donor_donation_list = () => {
       dataIndex: "",
     },
   ];
-
-  const Fetch_Donor_list = async (params) => {
-    const result = await api.get("/Get_donor_list", {
-      params: params,
-    });
-    console.log("รายชื่อผู้บริจาค", result.data);
-    setnewDonorlist(result.data);
-  };
-
-  useEffect(async () => {
-    await Fetch_Donor_list();
-  }, []);
+  //------------------//
 
   return (
     <>
@@ -240,7 +265,7 @@ const Donor_donation_list = () => {
             <Form
               form={frmSearch}
               layout="inline"
-              onFinish={""}
+              onFinish={onFinishSearch}
               initialValues={{
                 date_Search: [moment(), moment()],
               }}
@@ -253,7 +278,7 @@ const Donor_donation_list = () => {
                 />
               </Form.Item>
               <Form.Item
-                name="cid_Search"
+                name="keyword"
                 label="ค้นหาจากชื่อ-สกุล / เลขประจำตัวประชาชน"
               >
                 <Input placeholder="ชื่อ-สกุล / เลขประจำตัวประชาชน" />
@@ -266,18 +291,21 @@ const Donor_donation_list = () => {
             </Form>
           </Col>
           <Col span={3}>
-            <Link href="/Donor_register">
-              <Button
-                type="primary"
-                style={{ background: "#08979c", borderColor: "#e6fffb" }}
-              >
-                ลงทะเบียนผู้มาบริจาค
-              </Button>
-            </Link>
+            <Button
+              type="primary"
+              style={{ background: "#08979c", borderColor: "#e6fffb" }}
+              href="/Donor_register"
+            >
+              ลงทะเบียนผู้มาบริจาค
+            </Button>
           </Col>
         </Row>
         <br />
-        <Table columns={columns} dataSource={newDonorlist} />
+        <Row>
+          <Col span={24}>
+            <Table columns={columns} dataSource={newDonorlist} />
+          </Col>
+        </Row>
       </Layout>
     </>
   );
