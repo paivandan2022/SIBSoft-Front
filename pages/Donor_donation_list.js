@@ -1,4 +1,5 @@
 import {
+  CheckOutlined,
   DeleteOutlined,
   EditOutlined,
   SearchOutlined,
@@ -228,7 +229,7 @@ const Donor_donation_list = () => {
             <Button
               style={{ fontSize: "5px", color: "green" }}
               shape="circle"
-              icon={<DeleteOutlined />}
+              icon={<CheckOutlined />}
               // onClick={countDown}
             />
           </Tooltip>

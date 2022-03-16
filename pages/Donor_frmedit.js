@@ -46,9 +46,11 @@ function Donor_frmedit() {
   const [newMary, setMary] = useState([]);
   const [strAge, setstrAge] = useState();
   const [newStrBirthday, setStrBirthday] = useState();
+  const [checkyear, setCheckyear] = useState();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalVisibleEject, setIsModalVisibleEject] = useState(false);
+  const [isModalAlert, setIsModalAlert] = useState(false);
   const [password, setPassword] = useState();
   const router = useRouter();
   //------------------------------------//
@@ -110,15 +112,13 @@ function Donor_frmedit() {
         const formDataEject = frmEject.getFieldsValue();
         const formData = frmOpen.getFieldsValue();
         const result1 = await api.post(`/Eject_register`, {
-          ...formDataEject,
-
           eject_note: formDataEject.eject_note,
           staff: resultLogin.data.fname + " " + resultLogin.data.lname,
           cid: formData.cid,
         });
         setIsModalVisibleEject(false);
         setPassword();
-        // window.close();
+        window.close();
       } else {
         Modal.error({
           title: "Password invalid",
@@ -136,7 +136,24 @@ function Donor_frmedit() {
     setIsModalVisibleEject(false);
     setPassword();
   };
+  //----------------------------------//
 
+  const showModalAlert = () => {
+    console.log("checkyear", checkyear);
+    if (checkyear < "17" || checkyear > "70") {
+      setIsModalAlert(true);
+    } else {
+      setIsModalAlert(false);
+    }
+  };
+
+  const handleOkAlert = () => {
+    setIsModalAlert(false);
+  };
+
+  const handleCancelAlert = () => {
+    setIsModalAlert(false);
+  };
   const onCheckaddress = async (e) => {
     console.log(`checked = ${e.target.checked}`);
     if (e.target.checked) {
@@ -178,8 +195,6 @@ function Donor_frmedit() {
     Fetch_Aumpure(result.data[0].chwpart);
     Fetch_Tumbon(result.data[0].amppart);
     Fetch_Zip(result.data[0].tmbpart);
-
-    console.log("dddddfdf", result.data);
     setstrAge(result.data[0]?.age);
     frmOpen.setFieldsValue({
       ...result.data[0],
@@ -194,8 +209,10 @@ function Donor_frmedit() {
     setZip({
       zipcode: result.data[0].postcode,
     });
+    console.log("result", result.data);
     // //Call Get Donor_blood
     Get_Donor_blood(result.data[0].donor_no);
+    setCheckyear(result.data[0].age_year);
   };
 
   useEffect(async () => {
@@ -208,8 +225,9 @@ function Donor_frmedit() {
       await Fetch_occu();
       await Fetch_bloodgroup();
       await Fetch_frmedit(router?.query?.id);
+      await showModalAlert(checkyear);
     }
-  }, [router?.query?.id]);
+  }, [router?.query?.id, checkyear]);
 
   const Get_Donor_blood = async (value) => {
     const result = await api.get("/Get_Donor_Blood", {
@@ -227,7 +245,10 @@ function Donor_frmedit() {
   };
   const Fetch_Sex = async () => {
     const result = await api.get("/Get_sex");
+
     setNewSex(result.data);
+
+    // setSex(result.data);
   };
   const Fetch_bloodgroup = async () => {
     const result = await api.get("/Get_group");
@@ -317,7 +338,6 @@ function Donor_frmedit() {
     const Age = years + " ปี " + months + " เดือน " + day + " วัน";
     setstrAge(Age);
   };
-  console.log("dateValue--------bbbb---------->", strAge);
   const columns = [
     {
       title: "ครั้งที่",
@@ -355,6 +375,29 @@ function Donor_frmedit() {
       key: "blood_result",
     },
   ];
+
+  const setDate = (dateValue) => {
+    const a = moment();
+    const b = moment(dateValue, "YYYY-MM-DD");
+    setStrBirthday(b);
+    const age = moment.duration(a.diff(b));
+    const years = age.years();
+    const months = age.months();
+    const day = age.days();
+    const Age = years + " ปี " + months + " เดือน " + day + " วัน";
+    setstrAge(Age);
+  };
+
+  const onFinishdata = async (value) => {
+    console.log("Add_donor_frmedit---->", value);
+    const result = await api.put(`/Add_donor_frmedit`, {
+      ...value,
+      birthday: moment(newStrBirthday).format("YYYY-MM-DD"),
+      postcode: newZip,
+      postcode_new: newZip_new,
+      image: `${value.cid}.jpg`,
+    });
+  };
 
   return (
     <>
@@ -631,7 +674,7 @@ function Donor_frmedit() {
                             >
                               {newSex.map((item) => (
                                 <Option key={item.code} value={item.code}>
-                                  {item.name}
+                                  {item.code}
                                 </Option>
                               ))}
                             </Select>
@@ -1209,13 +1252,23 @@ function Donor_frmedit() {
             </p>
           </Form.Item>
         </Form>
-
         <p>
           <Input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </p>
+      </Modal>
+      {/* ------------------------ */}
+      <Modal
+        title="Basic Modal"
+        visible={isModalAlert}
+        onOk={handleOkAlert}
+        onCancel={handleCancelAlert}
+      >
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
       </Modal>
     </>
   );
