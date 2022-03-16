@@ -1,11 +1,4 @@
-import {
-  IdcardOutlined,
-  PlusCircleTwoTone,
-  PrinterOutlined,
-  ProfileOutlined,
-  RetweetOutlined,
-  UserDeleteOutlined,
-} from "@ant-design/icons";
+import { PlusCircleTwoTone, UserDeleteOutlined } from "@ant-design/icons";
 import {
   Button,
   Card,
@@ -1110,19 +1103,9 @@ function Donor_frmedit() {
                       </Form.Item>
                     </Card>
                     <br />
-                    <Row>
+                    <Row justify="end">
                       <Space>
-                        <Col span={1}>
-                          <Button
-                            type="primary"
-                            shape="round"
-                            icon={<IdcardOutlined />}
-                          >
-                            ค้นหาเครื่องอ่านบัตร
-                          </Button>
-                        </Col>
-
-                        <Col span={1} offset={15}>
+                        <Col>
                           <Space>
                             <Button
                               type="danger"
@@ -1130,14 +1113,7 @@ function Donor_frmedit() {
                               title="ยกเลิก"
                               icon={<UserDeleteOutlined />}
                             >
-                              ยกเลิก
-                            </Button>
-                            <Button
-                              type="warning"
-                              shape="round"
-                              icon={<RetweetOutlined />}
-                            >
-                              เริ่มใหม่
+                              ยกเลิกผู้บริจาค
                             </Button>
                             <Button
                               type="primary"
@@ -1174,12 +1150,6 @@ function Donor_frmedit() {
                   ผลตรวจคือ Salne, Papian, Coombs, Anti-A, Anti-B และ HBsAg,
                   TPHA, HIV,HBA-NAT, ALT, HCV, HIVAg ตามลำดับ
                 </Text>
-                <Button type="danger" shape="round" icon={<PrinterOutlined />}>
-                  พิมพ์ใบสมัคร
-                </Button>
-                <Button type="primary" shape="round" icon={<ProfileOutlined />}>
-                  พิมพ์บัตร
-                </Button>
               </Space>
             </div>
           </Row>
