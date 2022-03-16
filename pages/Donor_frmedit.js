@@ -4,7 +4,7 @@ import {
   PrinterOutlined,
   ProfileOutlined,
   RetweetOutlined,
-  UserDeleteOutlined
+  UserDeleteOutlined,
 } from "@ant-design/icons";
 import {
   Button,
@@ -21,7 +21,7 @@ import {
   Select,
   Space,
   Table,
-  Typography
+  Typography,
 } from "antd";
 import moment from "moment";
 import { useRouter } from "next/router";
@@ -37,11 +37,9 @@ const style = { background: "#0092ff", padding: "8px 0" };
 
 function Donor_frmedit() {
   const [newDonorlist, setnewDonorlist] = useState([]);
-<<<<<<< Updated upstream
+
   const [newDonor_Blood, setnewDonor_Blood] = useState([]);
-=======
-  const router = useRouter();
->>>>>>> Stashed changes
+
   const [newProvince, setProvince] = useState([]);
   const [newAmpure, setAmpure] = useState([]);
   const [newTumbon, setTumbon] = useState([]);
@@ -194,11 +192,10 @@ function Donor_frmedit() {
   };
   const Fetch_Sex = async () => {
     const result = await api.get("/Get_sex");
-<<<<<<< Updated upstream
+
     setNewSex(result.data);
-=======
-    setSex(result.data);
->>>>>>> Stashed changes
+
+    // setSex(result.data);
   };
   const Fetch_bloodgroup = async () => {
     const result = await api.get("/Get_group");
@@ -327,8 +324,6 @@ function Donor_frmedit() {
     },
   ];
 
-<<<<<<< Updated upstream
-=======
   const setDate = (dateValue) => {
     const a = moment();
     const b = moment(dateValue, "YYYY-MM-DD");
@@ -352,7 +347,6 @@ function Donor_frmedit() {
     });
   };
 
->>>>>>> Stashed changes
   return (
     <>
       <style jsx>
