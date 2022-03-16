@@ -4,7 +4,7 @@ import {
   PrinterOutlined,
   ProfileOutlined,
   RetweetOutlined,
-  UserDeleteOutlined,
+  UserDeleteOutlined
 } from "@ant-design/icons";
 import {
   Button,
@@ -21,7 +21,7 @@ import {
   Select,
   Space,
   Table,
-  Typography,
+  Typography
 } from "antd";
 import moment from "moment";
 import { useRouter } from "next/router";
@@ -37,7 +37,11 @@ const style = { background: "#0092ff", padding: "8px 0" };
 
 function Donor_frmedit() {
   const [newDonorlist, setnewDonorlist] = useState([]);
+<<<<<<< Updated upstream
   const [newDonor_Blood, setnewDonor_Blood] = useState([]);
+=======
+  const router = useRouter();
+>>>>>>> Stashed changes
   const [newProvince, setProvince] = useState([]);
   const [newAmpure, setAmpure] = useState([]);
   const [newTumbon, setTumbon] = useState([]);
@@ -190,7 +194,11 @@ function Donor_frmedit() {
   };
   const Fetch_Sex = async () => {
     const result = await api.get("/Get_sex");
+<<<<<<< Updated upstream
     setNewSex(result.data);
+=======
+    setSex(result.data);
+>>>>>>> Stashed changes
   };
   const Fetch_bloodgroup = async () => {
     const result = await api.get("/Get_group");
@@ -319,6 +327,32 @@ function Donor_frmedit() {
     },
   ];
 
+<<<<<<< Updated upstream
+=======
+  const setDate = (dateValue) => {
+    const a = moment();
+    const b = moment(dateValue, "YYYY-MM-DD");
+    setStrBirthday(b);
+    const age = moment.duration(a.diff(b));
+    const years = age.years();
+    const months = age.months();
+    const day = age.days();
+    const Age = years + " ปี " + months + " เดือน " + day + " วัน";
+    setstrAge(Age);
+  };
+
+  const onFinishdata = async (value) => {
+    console.log("Add_donor_frmedit---->", value);
+    const result = await api.put(`/Add_donor_frmedit`, {
+      ...value,
+      birthday: moment(newStrBirthday).format("YYYY-MM-DD"),
+      postcode: newZip,
+      postcode_new: newZip_new,
+      image: `${value.cid}.jpg`,
+    });
+  };
+
+>>>>>>> Stashed changes
   return (
     <>
       <style jsx>
@@ -592,7 +626,7 @@ function Donor_frmedit() {
                             >
                               {newSex.map((item) => (
                                 <Option key={item.code} value={item.code}>
-                                  {item.name}
+                                  {item.code}
                                 </Option>
                               ))}
                             </Select>
