@@ -34,8 +34,8 @@ const { RangePicker } = DatePicker;
 const { Option } = Select;
 
 const mapColorStatus = {
-  1: "red",
-  2: "green",
+  1: "pink",
+  2: "orange",
   3: "#fe6d43",
   4: "blue",
   5: "#000",

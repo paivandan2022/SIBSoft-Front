@@ -16,6 +16,7 @@ import {
   Image,
   Input,
   Layout,
+  Modal,
   Row,
   Select,
   Space,
@@ -24,6 +25,7 @@ import {
 } from "antd";
 import moment from "moment";
 import { useRouter } from "next/router";
+import os from "os";
 import { useEffect, useState } from "react";
 import api from "../lib/api";
 
@@ -35,6 +37,7 @@ const style = { background: "#0092ff", padding: "8px 0" };
 
 function Donor_frmedit() {
   const [newDonorlist, setnewDonorlist] = useState([]);
+  const [newDonor_Blood, setnewDonor_Blood] = useState([]);
   const [newProvince, setProvince] = useState([]);
   const [newAmpure, setAmpure] = useState([]);
   const [newTumbon, setTumbon] = useState([]);
@@ -50,11 +53,52 @@ function Donor_frmedit() {
   const [newMary, setMary] = useState([]);
   const [strAge, setstrAge] = useState();
   const [newStrBirthday, setStrBirthday] = useState();
-  // const [newHistoryDonor, setnewDonorlist] = useState([]);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [password, setPassword] = useState();
   const router = useRouter();
   //------------------------------------//
 
   const [frmOpen] = Form.useForm();
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = async () => {
+    // ส่ง user_name and password
+    const resultLogin = await api.post(`/Confirm_password`, {
+      password: password,
+    });
+    console.log("resultLogin", resultLogin.data);
+    try {
+      if (resultLogin.data.id_user) {
+        const formData = frmOpen.getFieldsValue();
+        console.log("xxxxxxxxxxxxxxxxxxxxxxxxxx", formData);
+        console.log("xxxxxxnewZipxxxxxxxxxx", newZip);
+        const result1 = await api.put(`/Add_donor_frmedit`, {
+          ...formData,
+
+          birthday: moment(formData.dob).format("YYYY-MM-DD"),
+          postcode: newZip,
+          postcode_new: newZip_new,
+          image: `${formData.cid}.jpg`,
+          staff: resultLogin.data.fname + " " + resultLogin.data.lname,
+        });
+        setIsModalVisible(false);
+        setPassword();
+        window.close();
+      } else {
+        Modal.error({
+          title: "Password invalid",
+          content: "กรุณากรอกรหัสผ่านให้ถูกต้อง!!",
+        });
+      }
+      setIsModalVisible(false);
+    } catch (error) {
+      Modal.error({ title: "Error", content: "กรุณากรอกข้อมูลให้ครบถ้วน!!" });
+    }
+  };
 
   const onCheckaddress = async (e) => {
     console.log(`checked = ${e.target.checked}`);
@@ -83,26 +127,23 @@ function Donor_frmedit() {
         chwpart_new: "",
         amppart_new: "",
         tmbpart_new: "",
-      });
-      setZip_new({
         postcode_new: "",
       });
     }
   };
   const Fetch_frmedit = async (value) => {
-    console.log("--------------CID ", value);
     const result = await api.get("/Get_donor_list_open", {
       params: {
         id: value,
       },
     });
-
     setnewDonorlist(result.data);
     Fetch_Aumpure(result.data[0].chwpart);
     Fetch_Tumbon(result.data[0].amppart);
     Fetch_Zip(result.data[0].tmbpart);
-    console.log("dddddfdf", result.data);
 
+    console.log("dddddfdf", result.data);
+    setstrAge(result.data[0]?.age);
     frmOpen.setFieldsValue({
       ...result.data[0],
       chwpart: Number(result.data[0].chwpart),
@@ -110,12 +151,14 @@ function Donor_frmedit() {
       amppart: Number(result.data[0]?.amppart),
       dob: moment(result.data[0]?.dob),
       tmbpart: result.data[0]?.tmbpart,
-      age: result.data[0].age,
+      age: frmOpen.strAge,
       marrystatus: Number(result.data[0].marrystatus),
     });
     setZip({
       zipcode: result.data[0].postcode,
     });
+    // //Call Get Donor_blood
+    Get_Donor_blood(result.data[0].donor_no);
   };
 
   useEffect(async () => {
@@ -131,22 +174,28 @@ function Donor_frmedit() {
     }
   }, [router?.query?.id]);
 
+  const Get_Donor_blood = async (value) => {
+    const result = await api.get("/Get_Donor_Blood", {
+      params: {
+        donor_no: value,
+      },
+    });
+    const txt = result.data;
+    setnewDonor_Blood(txt);
+  };
   const fetch_pname = async () => {
     const result = await api.get("/pname_en_th");
     const txt = result.data;
     setNewPname(txt);
   };
-
   const Fetch_Sex = async () => {
     const result = await api.get("/Get_sex");
     setNewSex(result.data);
   };
-
   const Fetch_bloodgroup = async () => {
     const result = await api.get("/Get_group");
     setBloodgroup(result.data);
   };
-
   const Fetch_occu = async () => {
     const result = await api.get("/Get_occu");
     setOccu(result.data);
@@ -160,7 +209,6 @@ function Donor_frmedit() {
     const result = await api.get("/Get_Province");
     setProvince(result.data);
   };
-
   const Fetch_Aumpure = async (value) => {
     const result = await api.get("/Get_Aumpure", {
       params: {
@@ -170,7 +218,6 @@ function Donor_frmedit() {
     setAmpure(result.data);
     setZip("");
   };
-
   const Fetch_Tumbon = async (value) => {
     const result = await api.get("/Get_Tumbon", {
       params: {
@@ -179,7 +226,6 @@ function Donor_frmedit() {
     });
     setTumbon(result.data);
   };
-
   const Fetch_Zip = async (value) => {
     const result = await api.get("/Get_Zip", {
       params: {
@@ -189,12 +235,12 @@ function Donor_frmedit() {
     setZip(result.data[0]);
   };
   // end fecth addrees //
+  // --------------------------------------------//
   // new fecth addrees //
   const Fetch_Province_new = async () => {
     const result = await api.get("/Get_Province_new");
     setProvince_new(result.data);
   };
-
   const Fetch_Aumpure_new = async (value) => {
     const result = await api.get("/Get_Aumpure_new", {
       params: {
@@ -204,7 +250,6 @@ function Donor_frmedit() {
     setAmpure_new(result.data);
     setZip_new("");
   };
-
   const Fetch_Tumbon_new = async (value) => {
     const result = await api.get("/Get_Tumbon_new", {
       params: {
@@ -213,7 +258,6 @@ function Donor_frmedit() {
     });
     setTumbon_new(result.data);
   };
-
   const Fetch_Zip_new = async (value) => {
     const result = await api.get("/Get_Zip_new", {
       params: {
@@ -223,11 +267,12 @@ function Donor_frmedit() {
     setZip_new(result.data[0]);
   };
   //end new fecth addrees //
-
-  const setDate = (dateValue) => {
+  const setDOB = (dateValue) => {
+    console.log("dateValue------------------>", dateValue);
     const a = moment();
     const b = moment(dateValue, "YYYY-MM-DD");
-    setStrBirthday(b);
+
+    setStrBirthday(b.toString());
     const age = moment.duration(a.diff(b));
     const years = age.years();
     const months = age.months();
@@ -235,21 +280,7 @@ function Donor_frmedit() {
     const Age = years + " ปี " + months + " เดือน " + day + " วัน";
     setstrAge(Age);
   };
-
-  const onFinish_Data = async (value) => {
-    console.log("Add_donor_frmedit", value);
-    try {
-      const result = await api.put(`/Add_donor_frmedit`, {
-        ...value,
-        birthday: moment(newStrBirthday).format("YYYY-MM-DD"),
-        postcode: newZip,
-        postcode_new: newZip_new,
-        image: `${value.cid}.jpg`,
-      });
-      window.close();
-    } catch (error) {}
-  };
-
+  console.log("dateValue--------bbbb---------->", strAge);
   const columns = [
     {
       title: "ครั้งที่",
@@ -304,7 +335,7 @@ function Donor_frmedit() {
       </style>
       <Layout>
         <Content>
-          <Form form={frmOpen} onFinish={onFinish_Data} Layout="vertical">
+          <Form form={frmOpen} Layout="vertical">
             <Space direction="vertical" style={{ width: "100%" }}>
               <div className="frmedit">
                 <Card title="ลงทะเบียนผู้บริจาคเลือด" bordered={false}>
@@ -515,13 +546,13 @@ function Donor_frmedit() {
                             }}
                           >
                             <DatePicker
-                              onChange={setDate}
+                              onChange={setDOB}
                               format="DD-MM-YYYY"
                               size="large"
                             />
                           </Form.Item>
                           <Form.Item
-                            name="age"
+                            // name="age"
                             label="อายุ"
                             rules={[{ required: true }]}
                             style={{
@@ -530,12 +561,14 @@ function Donor_frmedit() {
                           >
                             <Input
                               placeholder="อายุ"
-                              disabled
+                              // disabled
                               style={{
                                 width: "100%",
                                 height: "40px",
                                 fontSize: "18px",
                               }}
+                              value={strAge}
+                              disabled
                             />
                           </Form.Item>
                         </Card>
@@ -546,7 +579,6 @@ function Donor_frmedit() {
                           <Form.Item
                             label="เพศ"
                             name="sex"
-                            rules={[{ required: true }]}
                             style={{
                               display: "inline-block",
                               width: "50%",
@@ -857,7 +889,7 @@ function Donor_frmedit() {
                       <Form.Item
                         name="addrpart_new"
                         label="บ้านเลขที่"
-                        //   rules={[{ required: true }]}
+                        rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
                           width: "15%",
@@ -933,7 +965,7 @@ function Donor_frmedit() {
                       <Form.Item
                         label="จังหวัด"
                         name="chwpart_new"
-                        //   rules={[{ required: true }]}
+                        rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
                           width: "25%",
@@ -962,7 +994,7 @@ function Donor_frmedit() {
                       <Form.Item
                         label="อำเภอ"
                         name="amppart_new"
-                        //   rules={[{ required: true }]}
+                        rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
                           width: "20%",
@@ -989,7 +1021,7 @@ function Donor_frmedit() {
                         className="sss"
                         label="ตำบล"
                         name="tmbpart_new"
-                        //   rules={[{ required: true }]}
+                        rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
                           width: "20%",
@@ -1018,7 +1050,7 @@ function Donor_frmedit() {
                       <Form.Item
                         label="ไปรษณีย์"
                         name="postcode_new"
-                        //   rules={[{ required: true }]}
+                        rules={[{ required: true }]}
                         style={{
                           display: "inline-block",
                           width: "20%",
@@ -1084,6 +1116,7 @@ function Donor_frmedit() {
                               htmlType="submit"
                               shape="round"
                               icon={<PlusCircleTwoTone />}
+                              onClick={showModal}
                             >
                               บันทึกข้อมูล
                             </Button>
@@ -1101,7 +1134,7 @@ function Donor_frmedit() {
 
           <div className="frmedit">
             <Card title="ประวัติการบริจาค" bordered={false}>
-              <Table dataSource={newDonorlist} columns={columns} />
+              <Table dataSource={newDonor_Blood} columns={columns} />
             </Card>
           </div>
 
@@ -1125,8 +1158,32 @@ function Donor_frmedit() {
         </Content>
         <Footer></Footer>
       </Layout>
+
+      <Modal
+        title="Basic Modal"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={() => {
+          setIsModalVisible(false), setPassword();
+        }}
+        okButtonProps={{
+          disabled: !password,
+        }}
+        okText="ยืนยัน"
+        cancelText="ยกเลิก"
+      >
+        <Input value={password} onChange={(e) => setPassword(e.target.value)} />
+      </Modal>
+      {/* ------------------------ */}
     </>
   );
 }
 
 export default Donor_frmedit;
+
+export async function getServerSideProps(context) {
+  const computerName = os.hostname();
+  return {
+    props: { computerName }, // will be passed to the page component as props
+  };
+}

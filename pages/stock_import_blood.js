@@ -65,7 +65,6 @@ const import_blood = ({ computerName }) => {
     });
     // set state
     setSumlists(result.data);
-    console.log("setSumlists", result.data);
   };
   const column_Sum = [
     {
@@ -193,28 +192,6 @@ const import_blood = ({ computerName }) => {
     }
   };
 
-  // const onFinishUpdate = async () => {
-  //   Modal.confirm({
-  //     title: "Are you sure !",
-  //     content: "Save Data",
-  //     onOk: async () => {
-  //       const ip = await internalIpV4();
-  //       const ids = listimport.map((item) => item.id);
-  //       console.log("ids", ids);
-  //       console.log("IPV4", ip);
-  //       console.log("computerName", computerName);
-
-  //       const result = await api.put(`/Update_Import_Blood`, {
-  //         ids: ids,
-  //         //ip,
-  //         // computerName,
-  //       });
-  //       console.log("===result", result);
-  //       fetchList();
-  //     },
-  //   });
-  // };
-
   const fetchList = async () => {
     const ip = await internalIpV4();
     const result = await api.get(`/Select_Import_Blood`, {
@@ -222,9 +199,9 @@ const import_blood = ({ computerName }) => {
     });
     const fetchList_blood = result.data;
     setListimport(fetchList_blood);
-    console.log(ip);
-    console.log(computerName);
-    console.log("===fetchList", result.data);
+    // console.log(ip);
+    // console.log(computerName);
+    // console.log("===fetchList", result.data);
   };
 
   const initstaffname = () => {
