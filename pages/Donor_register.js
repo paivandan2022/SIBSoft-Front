@@ -283,11 +283,17 @@ function Donor_register() {
                     rules={[{ required: true }]}
                     style={{
                       display: "inline-block",
-                      width: "calc(41% - 8px)",
+                      // width: "calc(41% - 8px)",
                       margin: "0 20px",
                     }}
                   >
-                    <Input />
+                    <Input
+                      style={{
+                        width: "100%",
+                        height: "40px",
+                        fontSize: "18px",
+                      }}
+                    />
                   </Form.Item>
                   <Form.Item
                     name="passport"
@@ -295,18 +301,17 @@ function Donor_register() {
                     rules={[{ required: false }]}
                     style={{
                       display: "inline-block",
-                      width: "calc(41% - 8px)",
-                      margin: "0 60px",
+                      // width: "calc(41% - 8px)",
+                      // margin: "0 60px",
                     }}
                   >
-                    {/* <Input.Group compact>
-                        <Select defaultValue="cid">
-                          <Option value="cid">ประชาชน</Option>
-                          <Option value="passport">PASSPORT</Option>
-                        </Select>
-                       ----- ????? -----
-                      </Input.Group> */}
-                    <Input />
+                    <Input
+                      style={{
+                        width: "100%",
+                        height: "40px",
+                        fontSize: "18px",
+                      }}
+                    />
                   </Form.Item>
                 </Card>
               </Col>

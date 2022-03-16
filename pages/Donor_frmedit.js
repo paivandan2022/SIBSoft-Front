@@ -1,11 +1,4 @@
-import {
-  IdcardOutlined,
-  PlusCircleTwoTone,
-  PrinterOutlined,
-  ProfileOutlined,
-  RetweetOutlined,
-  UserDeleteOutlined,
-} from "@ant-design/icons";
+import { PlusCircleTwoTone, UserDeleteOutlined } from "@ant-design/icons";
 import {
   Button,
   Card,
@@ -55,11 +48,13 @@ function Donor_frmedit() {
   const [newStrBirthday, setStrBirthday] = useState();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalVisibleEject, setIsModalVisibleEject] = useState(false);
   const [password, setPassword] = useState();
   const router = useRouter();
   //------------------------------------//
 
   const [frmOpen] = Form.useForm();
+  const [frmEject] = Form.useForm();
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -74,8 +69,6 @@ function Donor_frmedit() {
     try {
       if (resultLogin.data.id_user) {
         const formData = frmOpen.getFieldsValue();
-        console.log("xxxxxxxxxxxxxxxxxxxxxxxxxx", formData);
-        console.log("xxxxxxnewZipxxxxxxxxxx", newZip);
         const result1 = await api.put(`/Add_donor_frmedit`, {
           ...formData,
 
@@ -98,6 +91,50 @@ function Donor_frmedit() {
     } catch (error) {
       Modal.error({ title: "Error", content: "กรุณากรอกข้อมูลให้ครบถ้วน!!" });
     }
+  };
+
+  //----------------------------------//
+
+  const showModalEject = () => {
+    setIsModalVisibleEject(true);
+  };
+
+  const handleOkEject = async () => {
+    // ส่ง user_name and password
+    const resultLogin = await api.post(`/Confirm_password`, {
+      password: password,
+    });
+    console.log("resultLogin", resultLogin.data);
+    try {
+      if (resultLogin.data.id_user) {
+        const formDataEject = frmEject.getFieldsValue();
+        const formData = frmOpen.getFieldsValue();
+        const result1 = await api.post(`/Eject_register`, {
+          ...formDataEject,
+
+          eject_note: formDataEject.eject_note,
+          staff: resultLogin.data.fname + " " + resultLogin.data.lname,
+          cid: formData.cid,
+        });
+        setIsModalVisibleEject(false);
+        setPassword();
+        // window.close();
+      } else {
+        Modal.error({
+          title: "Password invalid",
+          content: "กรุณากรอกรหัสผ่านให้ถูกต้อง!!",
+        });
+      }
+      setIsModalVisibleEject(false);
+    } catch (error) {
+      Modal.error({ title: "Error", content: "!!!!!!!!!!!!!!!!!!!" });
+    }
+    setIsModalVisibleEject(false);
+  };
+
+  const handleCancelEject = () => {
+    setIsModalVisibleEject(false);
+    setPassword();
   };
 
   const onCheckaddress = async (e) => {
@@ -343,75 +380,80 @@ function Donor_frmedit() {
                     <Row>
                       <Col span={12}>
                         <Card title="ข้อมูลทั่วไป">
-                          <Row justify="start">
-                            <Form.Item>
-                              <Image
-                                width="25%"
-                                src={`http://localhost:3306/image/${
-                                  newDonorlist[0]?.image
-                                }?pathType=2&date=${moment().format("HHmmss")}`}
-                              />
-                            </Form.Item>
-                            <br />
-                          </Row>
-                          <Form.Item
-                            name="donor_no"
-                            label="เลขประจำตัวผู้บริจาค"
-                            style={{
-                              display: "inline-block",
-                              width: "30%",
-                            }}
-                          >
-                            <Input
-                              style={{
-                                width: "100%",
-                                height: "40px",
-                                fontSize: "18px",
-                              }}
-                            />
-                          </Form.Item>
-                          <br />
-                          <Form.Item
-                            name="cid"
-                            label="เลขประจำตัวประชาชน"
-                            rules={[{ required: false }]}
-                            style={{
-                              display: "inline-block",
-                              width: "30%",
-                            }}
-                          >
-                            <Input
-                              style={{
-                                width: "100%",
-                                height: "40px",
-                                fontSize: "18px",
-                              }}
-                            />
-                          </Form.Item>
-                          <br />
-                          <Form.Item
-                            label="หมู่ของกรุ๊ปเลือด"
-                            name="bloodgroup"
-                            rules={[{ required: false }]}
-                            style={{
-                              display: "inline-block",
-                            }}
-                          >
-                            <Select
-                              placeholder="กรุ๊ปเลือด"
-                              size="large"
-                              style={{ width: "65%" }}
-                            >
-                              {newBloodgroup.map((item) => (
-                                <Option
-                                  key={item.blood_id}
-                                  value={item.blood_name}
+                          <Row justify="center">
+                            <Col span={12}>
+                              <Form.Item>
+                                <Image
+                                  width="75%"
+                                  src={`http://localhost:3306/image/${
+                                    newDonorlist[0]?.image
+                                  }?pathType=2&date=${moment().format(
+                                    "HHmmss"
+                                  )}`}
+                                />
+                              </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                              <Form.Item
+                                name="donor_no"
+                                label="เลขประจำตัวผู้บริจาค"
+                                style={{
+                                  display: "inline-block",
+                                  width: "60%",
+                                }}
+                              >
+                                <Input
+                                  style={{
+                                    width: "100%",
+                                    height: "40px",
+                                    fontSize: "18px",
+                                  }}
+                                />
+                              </Form.Item>
+                              <br />
+                              <Form.Item
+                                name="cid"
+                                label="เลขประจำตัวประชาชน"
+                                rules={[{ required: false }]}
+                                style={{
+                                  display: "inline-block",
+                                  width: "60%",
+                                }}
+                              >
+                                <Input
+                                  style={{
+                                    width: "100%",
+                                    height: "40px",
+                                    fontSize: "18px",
+                                  }}
+                                />
+                              </Form.Item>
+                              <br />
+                              <Form.Item
+                                label="หมู่ของกรุ๊ปเลือด"
+                                name="bloodgroup"
+                                rules={[{ required: false }]}
+                                style={{
+                                  display: "inline-block",
+                                }}
+                              >
+                                <Select
+                                  placeholder="กรุ๊ปเลือด"
+                                  size="large"
+                                  style={{ width: "100%" }}
                                 >
-                                  {item.blood_name}
-                                </Option>
-                              ))}
-                            </Select>
-                          </Form.Item>
+                                  {newBloodgroup.map((item) => (
+                                    <Option
+                                      key={item.blood_id}
+                                      value={item.blood_name}
+                                    >
+                                      {item.blood_name}
+                                    </Option>
+                                  ))}
+                                </Select>
+                              </Form.Item>
+                            </Col>
+                          </Row>
                         </Card>
                         <Card title="ชื่อ-นามสกุล(ไทย)">
                           <Form.Item
@@ -477,8 +519,7 @@ function Donor_frmedit() {
                         <Card title="Fullname">
                           <Form.Item
                             name="pname_en"
-                            label="คำนำหน้า(ENG)"
-                            rules={[{ required: true }]}
+                            label="Prefix"
                             style={{
                               display: "inline-block",
                               marginRight: "15px",
@@ -501,8 +542,7 @@ function Donor_frmedit() {
                           </Form.Item>
                           <Form.Item
                             name="fname_en"
-                            label="ชื่อจริง(ENG)"
-                            rules={[{ required: true }]}
+                            label="First name"
                             style={{
                               display: "inline-block",
                               marginRight: "15px",
@@ -519,8 +559,7 @@ function Donor_frmedit() {
                           </Form.Item>
                           <Form.Item
                             name="lname_en"
-                            label="นามสกุล(ENG)"
-                            rules={[{ required: true }]}
+                            label="Last name"
                             style={{
                               display: "inline-block",
                             }}
@@ -597,7 +636,7 @@ function Donor_frmedit() {
                               ))}
                             </Select>
                           </Form.Item>
-                          <br />
+
                           <Form.Item
                             label="สถานะ"
                             name="marrystatus"
@@ -605,13 +644,12 @@ function Donor_frmedit() {
                             style={{
                               display: "inline-block",
                               width: "calc(35% - 8px)",
-                              margin: "0 8px",
                             }}
                           >
                             <Select
                               placeholder="เลือกสถานะ"
                               size="large"
-                              style={{ width: "50%" }}
+                              style={{ width: "75%" }}
                             >
                               {newMary.map((item) => (
                                 <Option
@@ -1082,34 +1120,18 @@ function Donor_frmedit() {
                       </Form.Item>
                     </Card>
                     <br />
-                    <Row>
+                    <Row justify="end">
                       <Space>
-                        <Col span={1}>
-                          <Button
-                            type="primary"
-                            shape="round"
-                            icon={<IdcardOutlined />}
-                          >
-                            ค้นหาเครื่องอ่านบัตร
-                          </Button>
-                        </Col>
-
-                        <Col span={1} offset={15}>
+                        <Col>
                           <Space>
                             <Button
                               type="danger"
                               shape="round"
                               title="ยกเลิก"
                               icon={<UserDeleteOutlined />}
+                              onClick={showModalEject}
                             >
-                              ยกเลิก
-                            </Button>
-                            <Button
-                              type="warning"
-                              shape="round"
-                              icon={<RetweetOutlined />}
-                            >
-                              เริ่มใหม่
+                              ยกเลิกการบริจาค
                             </Button>
                             <Button
                               type="primary"
@@ -1146,12 +1168,6 @@ function Donor_frmedit() {
                   ผลตรวจคือ Salne, Papian, Coombs, Anti-A, Anti-B และ HBsAg,
                   TPHA, HIV,HBA-NAT, ALT, HCV, HIVAg ตามลำดับ
                 </Text>
-                <Button type="danger" shape="round" icon={<PrinterOutlined />}>
-                  พิมพ์ใบสมัคร
-                </Button>
-                <Button type="primary" shape="round" icon={<ProfileOutlined />}>
-                  พิมพ์บัตร
-                </Button>
               </Space>
             </div>
           </Row>
@@ -1160,7 +1176,7 @@ function Donor_frmedit() {
       </Layout>
 
       <Modal
-        title="Basic Modal"
+        title="ยืนยันรหัสผ่าน"
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={() => {
@@ -1175,6 +1191,32 @@ function Donor_frmedit() {
         <Input value={password} onChange={(e) => setPassword(e.target.value)} />
       </Modal>
       {/* ------------------------ */}
+      <Modal
+        title="ยกเลิกการบริจาค"
+        visible={isModalVisibleEject}
+        onOk={handleOkEject}
+        onCancel={handleCancelEject}
+        okButtonProps={{
+          disabled: !password,
+        }}
+        okText="ยืนยัน"
+        cancelText="ยกเลิก"
+      >
+        <Form form={frmEject} Layout="vertical">
+          <Form.Item name="eject_note">
+            <p>
+              <TextArea name="eject_note" rows={4} />
+            </p>
+          </Form.Item>
+        </Form>
+
+        <p>
+          <Input
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </p>
+      </Modal>
     </>
   );
 }
