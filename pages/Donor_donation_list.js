@@ -30,9 +30,14 @@ import { useEffect, useState } from "react";
 import { Layout } from "../components";
 import api from "../lib/api";
 import env from "/env.json";
+const { TextArea } = Input;
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
+
+const onChangeEject = (e) => {
+  console.log("Change:", e.target.value);
+};
 
 const mapColorStatus = {
   1: "pink",
@@ -40,24 +45,6 @@ const mapColorStatus = {
   3: "#fe6d43",
   4: "green",
   5: "#000",
-};
-
-const countDown = () => {
-  let secondsToGo = 9;
-  const modal = Modal.warning({
-    title: "แจ้งเตือนจากระบบ",
-    content: `ระบบกำทำการยกเลิกข้อมูลของผู้บริจาคในอีก ${secondsToGo} วินาที`,
-  });
-  const timer = setInterval(() => {
-    secondsToGo -= 1;
-    modal.update({
-      content: `ระบบกำทำการยกเลิกข้อมูลของผู้บริจาคในอีก ${secondsToGo} วินาที`,
-    });
-  }, 1000);
-  setTimeout(() => {
-    clearInterval(timer);
-    modal.destroy();
-  }, secondsToGo * 1000);
 };
 
 const Editpopup = (value) => {
@@ -105,9 +92,22 @@ const Bloodpopup = (value) => {
 };
 const Donor_donation_list = () => {
   const [newDonorlist, setnewDonorlist] = useState([]);
-  const [editDonorlist, setEditDonorlist] = useState([]);
-
   const [frmSearch] = Form.useForm();
+  const [ModalvisbleEject, setModalvisbleEject] = useState(false);
+
+  // -------ยกเลิกผู้บริจาค--------- //
+  const modalEject = () => {
+    setModalvisbleEject(true);
+  };
+
+  const okEject = () => {
+    setModalvisbleEject(false);
+  };
+
+  const cancelEject = () => {
+    setModalvisbleEject(false);
+  };
+  // -------end ยกเลิกผู้บริจาค--------- //
 
   //-----------------------------------//
   const onFinishSearch = async (value) => {
@@ -233,13 +233,13 @@ const Donor_donation_list = () => {
               // onClick={countDown}
             />
           </Tooltip>
-          <Tooltip title="ลบ">
+          <Tooltip title="ยกเลิกรายชื่อผู้มาบริจาค">
             <Button
               style={{ fontSize: "5px", color: "Tomato" }}
               shape="circle"
               title="ยกเลิก"
               icon={<UserDeleteOutlined />}
-              // onClick={showModalEject}
+              onClick={modalEject}
             ></Button>
           </Tooltip>
         </Space>
@@ -317,6 +317,45 @@ const Donor_donation_list = () => {
           </Row>
         </Card>
       </Layout>
+      <Modal
+        title="ยกเลิกรายชื่อผู้มาบริจาค"
+        visible={ModalvisbleEject}
+        onOk={okEject}
+        onCancel={cancelEject}
+        okText="ยืนยัน"
+        cancelText="ยกเลิก"
+      >
+        <Space direction="vertical">
+          <Form>
+            <Form.Item>
+              <Row>
+                <Text type="default">ชื่อผู้บริจาค :</Text>
+                &nbsp;
+                <Text type="success">ทดสอบระบบ ทดสอบระบบ</Text>
+                &nbsp;
+                <Text type="default">เลขประจำตัว :</Text>
+                <p> </p>
+                &nbsp;
+                <Text type="success">142365478962155165</Text>
+              </Row>
+            </Form.Item>
+            <Form.Item>
+              <Text type="secondary">เหตุผลการยกเลิก :</Text>
+              <TextArea
+                showCount
+                rows={4}
+                placeholder=""
+                maxLength={100}
+                onChange={onChangeEject}
+              />
+            </Form.Item>
+            <Form.Item>
+              <Text type="secondary">รหัสผ่าน :</Text>
+              <Input type="password" placeholder="password" />
+            </Form.Item>
+          </Form>
+        </Space>
+      </Modal>
     </>
   );
 };
