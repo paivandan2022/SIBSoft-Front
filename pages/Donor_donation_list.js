@@ -99,13 +99,41 @@ const Donor_donation_list = () => {
   const [frmSearch] = Form.useForm();
   const [ModalvisbleEject, setModalvisbleEject] = useState(false);
   const [userSelect, setUserSelect] = useState({});
+  const [password, setPassword] = useState();
 
   // -------ยกเลิกผู้บริจาค--------- //
   // const modalEject = () => {
   //   setModalvisbleEject(true);
   // };
 
-  const okEject = () => {
+  const okEject = async () => {
+    // ส่ง user_name and password
+    const resultLogin = await api.post(`/Confirm_password`, {
+      password: password,
+    });
+    console.log("resultLogin", resultLogin.data);
+    try {
+      if (resultLogin.data.id_user) {
+        const formDataEject = frmEject.getFieldsValue();
+        console.log(formDataEject);
+        const result1 = await api.post(`/Eject_register`, {
+          eject_note: formDataEject.eject_note,
+          staff: resultLogin.data.fname + " " + resultLogin.data.lname,
+          pid: formDataEject.pid,
+        });
+        setModalvisbleEject(false);
+        setPassword();
+        window.close();
+      } else {
+        Modal.error({
+          title: "Password invalid",
+          content: "กรุณากรอกรหัสผ่านให้ถูกต้อง!!",
+        });
+      }
+      setModalvisbleEject(false);
+    } catch (error) {
+      Modal.error({ title: "Error", content: "!!!!!!!!!!!!!!!!!!!" });
+    }
     setModalvisbleEject(false);
   };
 
@@ -342,47 +370,51 @@ const Donor_donation_list = () => {
         onCancel={cancelEject}
         okText="ยืนยัน"
         cancelText="ยกเลิก"
-        okButtonProps={{ disabled: true }}
+        // okButtonProps={{ disabled: true }}
         // cancelButtonProps={{ disabled: true }}
       >
         <Space direction="vertical">
           <Form form={frmEject}>
             <Row>
-              <Text>ชื่อ-นามสกุล : &nbsp; </Text>
-              <Form.Item name="fullname">
-                <Input status="error" disabled />
-              </Form.Item>
+              <Text>ต้องการ </Text>
+              <Text type="danger" underline strong>
+                ยกเลิก{" "}
+              </Text>
+              <Text>การบริจาคเลือด &nbsp; </Text>
             </Row>
             <Row>
-              <Text>เลขประจำตัว : &nbsp; </Text>
-              <Form.Item name="cid">
-                <Input status="error" disabled />
-              </Form.Item>
+              <Text underline>ชื่อ-นามสกุล : </Text>
+              <Text strong>&nbsp; {userSelect.fullname} &nbsp;</Text>
+              <Text underline>เลขประจำตัว : </Text>
+              <Text strong>&nbsp; {userSelect.cid}</Text>
             </Row>
-            <Form.Item>
-              <Text type="secondary">เหตุผลการยกเลิก :</Text>
+            <Text type="secondary">เหตุผลการยกเลิก :</Text>
+            <Form.Item name="pid" hidden>
+              <Input />
+            </Form.Item>
+            <Form.Item name="eject_note">
               <TextArea
                 showCount
                 rows={4}
                 placeholder=""
-                maxLength={100}
+                maxLength={200}
                 onChange={onChangeEject}
-                style={{ width: "170%" }}
-              />
-            </Form.Item>
-
-            <Form.Item>
-              <Text type="secondary">รหัสผ่าน :</Text>
-
-              <Input.Password
-                placeholder="กรุณากรอกรหัสผ่าน"
-                iconRender={(visible) =>
-                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                }
-                style={{ width: "170%" }}
+                style={{ width: "100%" }}
+                name="eject_note"
               />
             </Form.Item>
           </Form>
+          <Text type="secondary">รหัสผ่าน :</Text>
+
+          <Input.Password
+            placeholder="กรุณากรอกรหัสผ่าน"
+            iconRender={(visible) =>
+              visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+            }
+            style={{ width: "100%" }}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </Space>
       </Modal>
     </>
