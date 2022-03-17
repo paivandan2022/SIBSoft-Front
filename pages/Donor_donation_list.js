@@ -1,9 +1,9 @@
 import {
   CheckOutlined,
-  DeleteOutlined,
   EditOutlined,
   SearchOutlined,
   SyncOutlined,
+  UserDeleteOutlined,
 } from "@ant-design/icons";
 import {
   Avatar,
@@ -210,7 +210,7 @@ const Donor_donation_list = () => {
         <Space size="middle">
           <Tooltip title="ดูข้อมูลผู้บริจาค">
             <Button
-              style={{ fontSize: "5px", color: "green" }}
+              style={{ fontSize: "5px", color: "#5DADE2" }}
               shape="circle"
               icon={<SearchOutlined />}
               // onClick={Editpopup(record.cid)}
@@ -219,7 +219,7 @@ const Donor_donation_list = () => {
           </Tooltip>
           <Tooltip title="ลงทะเบียนบริจาคเลือด">
             <Button
-              style={{ fontSize: "5px", color: "brue" }}
+              style={{ fontSize: "5px", color: "#F5B041" }}
               shape="circle"
               icon={<EditOutlined />}
               onClick={() => Bloodpopup(record.cid)}
@@ -237,9 +237,10 @@ const Donor_donation_list = () => {
             <Button
               style={{ fontSize: "5px", color: "Tomato" }}
               shape="circle"
-              icon={<DeleteOutlined />}
-              onClick={countDown}
-            />
+              title="ยกเลิก"
+              icon={<UserDeleteOutlined />}
+              // onClick={showModalEject}
+            ></Button>
           </Tooltip>
         </Space>
       ),
