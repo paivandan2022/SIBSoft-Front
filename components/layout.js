@@ -55,6 +55,9 @@ const Main = ({ children, keyTab }) => {
       case "Donor_donation_list":
         Router.push("/Donor_donation_list");
         break;
+      case "Donor_settingMobile":
+        Router.push("/Donor_settingMobile");
+        break;
       case "showuser":
         Router.push("/showuser");
         break;
@@ -126,6 +129,9 @@ const Main = ({ children, keyTab }) => {
               <Menu.Item key="12">แฟ้มข้อมูลผู้บริจาค</Menu.Item>
               <Menu.Item key="13">ส่งออกข้อมูลออกหน่วย</Menu.Item>
               <Menu.Item key="14">นำเข้าข้อมูลออกหน่วย</Menu.Item>
+              <Menu.Item key="Donor_settingMobile">
+                ตั้งค่าหน่วยรับบริจาค
+              </Menu.Item>
             </SubMenu>
             <SubMenu key="sub4" icon={<BiFileFind />} title="PATIENT">
               <Menu.Item key="15">ลงทะเบียนขอเลือด</Menu.Item>
