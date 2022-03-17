@@ -28,12 +28,12 @@ function Donor_register() {
   const [newTumbon, setTumbon] = useState([]);
   const [newZip, setZip] = useState([]);
   const [newSex, setSex] = useState([]);
+  const [newMobile, setMobile] = useState([]);
   const [newOccu, setOccu] = useState([]);
   const [newMary, setMary] = useState([]);
   const [newBloodgroup, setBloodgroup] = useState([]);
   const [strAge, setstrAge] = useState();
   const [newStrBirthday, setStrBirthday] = useState();
-  const [newStrzip, setStrzip] = useState();
   const [loadingUploadPic, setLoadingUploadPic] = useState(false);
 
   const [frmAdd] = Form.useForm();
@@ -52,6 +52,7 @@ function Donor_register() {
     await Fetch_Province();
     await Fetch_Sex();
     await Fetch_mary();
+    await Fetch_Mobile();
     await Fetch_occu();
     await Fetch_bloodgroup();
     // frmAdd.setFieldValue({
@@ -71,7 +72,11 @@ function Donor_register() {
     const result = await api.get("/Get_group");
     setBloodgroup(result.data);
   };
-
+  const Fetch_Mobile = async () => {
+    const result = await api.get("/Get_Mobile");
+    setMobile(result.data);
+    console.log("26262622", result.data);
+  };
   const Fetch_bloodgroup = async () => {
     const result = await api.get("/Get_sex");
     setSex(result.data);
@@ -312,6 +317,28 @@ function Donor_register() {
                         fontSize: "18px",
                       }}
                     />
+                  </Form.Item>
+                  <Form.Item
+                    name="MOBCODE"
+                    label="สถานที่"
+                    rules={[{ required: true }]}
+                    style={{
+                      display: "inline-block",
+                      // width: "calc(41% - 8px)",
+                      margin: "0 20px",
+                    }}
+                  >
+                    <Select
+                      placeholder="สถานที่"
+                      size="large"
+                      style={{ width: "100%" }}
+                    >
+                      {newMobile.map((item) => (
+                        <Option key={item.MOBCODE} value={item.MOBCODE}>
+                          {item.MOBNAME}
+                        </Option>
+                      ))}
+                    </Select>
                   </Form.Item>
                 </Card>
               </Col>
