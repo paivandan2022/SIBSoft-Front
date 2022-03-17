@@ -1,6 +1,8 @@
 import {
   CheckOutlined,
   EditOutlined,
+  EyeInvisibleOutlined,
+  EyeTwoTone,
   SearchOutlined,
   SyncOutlined,
   UserDeleteOutlined,
@@ -91,14 +93,17 @@ const Bloodpopup = (value) => {
   window.open(url, title, str);
 };
 const Donor_donation_list = () => {
+  const [frmEject] = Form.useForm();
+
   const [newDonorlist, setnewDonorlist] = useState([]);
   const [frmSearch] = Form.useForm();
   const [ModalvisbleEject, setModalvisbleEject] = useState(false);
+  const [userSelect, setUserSelect] = useState({});
 
   // -------ยกเลิกผู้บริจาค--------- //
-  const modalEject = () => {
-    setModalvisbleEject(true);
-  };
+  // const modalEject = () => {
+  //   setModalvisbleEject(true);
+  // };
 
   const okEject = () => {
     setModalvisbleEject(false);
@@ -107,6 +112,15 @@ const Donor_donation_list = () => {
   const cancelEject = () => {
     setModalvisbleEject(false);
   };
+  const onEject = async (pid) => {
+    const userSelected = newDonorlist.find((item) => item.pid === pid);
+    setModalvisbleEject(true);
+    setUserSelect(userSelected);
+    frmEject.setFieldsValue({
+      ...userSelected,
+    });
+  };
+
   // -------end ยกเลิกผู้บริจาค--------- //
 
   //-----------------------------------//
@@ -132,6 +146,8 @@ const Donor_donation_list = () => {
     const result = await api.get("/Get_donor_list", { params });
     console.log("รายชื่อผู้บริจาค", result.data);
     setnewDonorlist(result.data);
+    // setpid(result.data?.pid);
+    // console.log("55555555555555", result.data[0].pid);
   };
 
   useEffect(async () => {
@@ -206,7 +222,7 @@ const Donor_donation_list = () => {
     {
       title: "การทำงาน",
       key: "Option",
-      render: (text, record) => (
+      render: (record) => (
         <Space size="middle">
           <Tooltip title="ดูข้อมูลผู้บริจาค">
             <Button
@@ -239,14 +255,16 @@ const Donor_donation_list = () => {
               shape="circle"
               title="ยกเลิก"
               icon={<UserDeleteOutlined />}
-              onClick={modalEject}
+              // onClick={modalEject}
+
+              onClick={() => onEject(record.pid)}
             ></Button>
           </Tooltip>
         </Space>
       ),
-      dataIndex: "",
     },
   ];
+
   //------------------//
 
   return (
@@ -324,21 +342,23 @@ const Donor_donation_list = () => {
         onCancel={cancelEject}
         okText="ยืนยัน"
         cancelText="ยกเลิก"
+        okButtonProps={{ disabled: true }}
+        // cancelButtonProps={{ disabled: true }}
       >
         <Space direction="vertical">
-          <Form>
-            <Form.Item>
-              <Row>
-                <Text type="default">ชื่อผู้บริจาค :</Text>
-                &nbsp;
-                <Text type="success">ทดสอบระบบ ทดสอบระบบ</Text>
-                &nbsp;
-                <Text type="default">เลขประจำตัว :</Text>
-                <p> </p>
-                &nbsp;
-                <Text type="success">142365478962155165</Text>
-              </Row>
-            </Form.Item>
+          <Form form={frmEject}>
+            <Row>
+              <Text>ชื่อ-นามสกุล : &nbsp; </Text>
+              <Form.Item name="fullname">
+                <Input status="error" disabled />
+              </Form.Item>
+            </Row>
+            <Row>
+              <Text>เลขประจำตัว : &nbsp; </Text>
+              <Form.Item name="cid">
+                <Input status="error" disabled />
+              </Form.Item>
+            </Row>
             <Form.Item>
               <Text type="secondary">เหตุผลการยกเลิก :</Text>
               <TextArea
@@ -347,11 +367,20 @@ const Donor_donation_list = () => {
                 placeholder=""
                 maxLength={100}
                 onChange={onChangeEject}
+                style={{ width: "170%" }}
               />
             </Form.Item>
+
             <Form.Item>
               <Text type="secondary">รหัสผ่าน :</Text>
-              <Input type="password" placeholder="password" />
+
+              <Input.Password
+                placeholder="กรุณากรอกรหัสผ่าน"
+                iconRender={(visible) =>
+                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                }
+                style={{ width: "170%" }}
+              />
             </Form.Item>
           </Form>
         </Space>

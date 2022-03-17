@@ -1,4 +1,3 @@
-import { ScanOutlined } from "@ant-design/icons";
 import {
   Button,
   Card,
@@ -60,19 +59,6 @@ function Donor_frmblood() {
         <div className="container">
           <Card title="ลงทะเบียนบริจาคเลือด">
             <Card type="inner" title="ข้อมูลผู้บริจาค" e>
-              <Row>
-                <Col span={12}>
-                  <Form.Item label="ค้นหาผู้บริจาค">
-                    <Input placeholder="หมายเลขผู้บริจาค" />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <ScanOutlined
-                    style={{ fontSize: "30px", color: "#eb1330" }}
-                    // spin
-                  />
-                </Col>
-              </Row>
               <Row>
                 <Col span={6}>
                   <Text>รหัสผู้บริจาค :</Text>
